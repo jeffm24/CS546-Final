@@ -137,12 +137,12 @@ app.post("/signout", function(request, response) {
 });
 
 // Route for signing a user up
-app.post("/signup", function(request, response) {
+app.post("/register", function(request, response) {
 
     // Only run addUser function if the user is not currently logged in
     if (!response.locals.user) {
 
-        userData.addUser(request.body.username, request.body.password).then(function(val) {
+        userData.addUser(request.body.username, request.body.password, request.body.confirm).then(function(val) {
             response.json({status: request.body.username + " successfully added. Please try logging in."});
         }, function(errorMessage) {
             response.status(500).json({ error: errorMessage });

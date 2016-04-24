@@ -28,13 +28,15 @@ MongoClient.connect(fullMongoUrl)
         var usersCollection = db.collection("users");
 
         // Adds a new user if one does not already exist with the given username
-        exports.addUser = function (username, password) {
+        exports.addUser = function (username, password, confirm) {
 
             // Error checking
             if (!username || !password) {
                 return Promise.reject("You must provide both a username and password.");
             } else if (typeof username !== 'string' || typeof password !== 'string') {
                 return Promise.reject("Arguments not correct type.");
+            } else if (password !== confirm) {
+                return Promise.reject("Please make sure your passwords match.");
             }
 
             return usersCollection.find({"username": username}).limit(1).toArray().then(function(listOfUsers) {
