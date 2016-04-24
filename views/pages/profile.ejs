@@ -3,24 +3,15 @@
 
 <head>
     <% include ../partials/head %>
-
-    <style>
-        #signOutBtn {
-            border: 1px solid black;
-            border-radius: 2px;
-            background-color: grey;
-            color: white;
-            box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.5);
-            cursor: pointer;
-            width: 80px;
-            text-align: center;
-        }
-    </style>
 </head>
 
 <body>
+    <%- include('../partials/nav', {showLinks: true}); %>
+
     <div class="container">
-        <h1><%= username %>'s Profile</h1>
+        <div class="page-header">
+            <h1>Profile <small>(<%= username %>)</small></h1>
+        </div>
         <ul>
             <li><b>First Name:</b> <%= firstName %></li>
             <li><b>Last Name:</b> <%= lastName %></li>
@@ -28,22 +19,32 @@
             <li><b>Pet Name:</b> <%= petName %></li>
         </ul>
         <hr />
-        <h2>Edit Profile Info</h2>
-        <form id="editInfoForm">
-            <label>First Name: <input name="firstName" placeholder="First Name" type="text" value=<%= firstName %>></label>
-            <br />
-            <label>Last Name: <input name="lastName" placeholder="Last Name" type="text" value=<%= lastName %>></label>
-            <br />
-            <label>Hobby: <input name="hobby" placeholder="Hobby" type="text" value=<%= hobby %>></label>
-            <br />
-            <label>Pet Name: <input name="petName" placeholder="Pet Name" type="text" value=<%= petName %>></label>
-            <br />
-            <input type="submit" value="Submit">
-        </form>
-        <hr />
-        <div id="signOutBtn">
-            <p>Sign Out</p>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h2 class="panel-title">Edit Profile Info</h2>
+            </div>
+            <div class="panel-body">
+                <form id="editInfoForm">
+                    <div class="form-group">
+                        <label>First Name: <input class="form-control" name="firstName" placeholder="First Name" type="text" value=<%= firstName %>></label>
+                    </div>
+                    <div class="form-group">
+                        <label>Last Name: <input class="form-control" name="lastName" placeholder="Last Name" type="text" value=<%= lastName %>></label>
+                    </div>
+                    <div class="form-group">
+                        <label>Hobby: <input class="form-control" name="hobby" placeholder="Hobby" type="text" value=<%= hobby %>></label>
+                    </div>
+                    <div class="form-group">
+                        <label>Pet Name: <input class="form-control" name="petName" placeholder="Pet Name" type="text" value=<%= petName %>></label>
+                    </div>
+                    <div class="form-group">
+                        <input class="btn btn-primary" type="submit" value="Submit">
+                    </div>
+                </form>
+            </div>
         </div>
+        <hr />
+        <button id="signOutBtn" type="button" class="btn btn-danger">Sign Out</button>
     </div>
 
     <% include ../partials/scripts %>

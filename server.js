@@ -37,7 +37,7 @@ app.get("/", function(request, response) {
     if (response.locals.user) {
         response.redirect('/profile');
     } else {
-        response.render('pages/signInUp', {pageTitle: 'Sign In/Sign Up'});
+        response.render('pages/signInUp', {pageTitle: 'Sign In/Register'});
     }
 
 })
