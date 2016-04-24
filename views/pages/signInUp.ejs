@@ -81,7 +81,13 @@
                     location.reload();
                 },
                 error: function(xhr, status, error) {
-                    alert(xhr.responseText + ' (' + xhr.status + ')');
+                    console.log(xhr);
+                    swal({
+                        title: "Error!",
+                        text: xhr.responseJSON.error,
+                        type: "error",
+                        confirmButtonText: "OK"
+                    });
                 }
             });
 
@@ -98,7 +104,12 @@
                     'confirm': $('#register-form input[name="confirm-password"]').val()
                 },
                 success: function(data) {
-                    alert(JSON.stringify(data));
+                    swal({
+                        title: "Success!",
+                        text: data.status,
+                        type: "success",
+                        confirmButtonText: "OK"
+                    });
 
                     // Clear out fields
                     $('#register-form input[name="username"]').val('');
@@ -109,7 +120,12 @@
                     $('#login-form-link').click();
                 },
                 error: function(xhr, status, error) {
-                    alert(xhr.responseText + ' (' + xhr.status + ')');
+                    swal({
+                        title: "Error!",
+                        text: xhr.responseJSON.error,
+                        type: "error",
+                        confirmButtonText: "OK"
+                    });
                 }
             });
 

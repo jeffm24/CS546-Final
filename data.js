@@ -31,8 +31,8 @@ MongoClient.connect(fullMongoUrl)
         exports.addUser = function (username, password, confirm) {
 
             // Error checking
-            if (!username || !password) {
-                return Promise.reject("You must provide both a username and password.");
+            if (!username || !password || !confirm) {
+                return Promise.reject("Please make sure to fill out all fields.");
             } else if (typeof username !== 'string' || typeof password !== 'string') {
                 return Promise.reject("Arguments not correct type.");
             } else if (password !== confirm) {
