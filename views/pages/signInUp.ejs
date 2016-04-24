@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <% include ../partials/head %>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <h1>Sign In</h1>
+                <form id="signInForm">
+                    <label>username: <input name="username" placeholder="Username" type="text"></label>
+                    <br />
+                    <label>password: <input name="password" placeholder="Password" type="password"></label>
+                    <br />
+                    <input type="submit" value="Sign In">
+                </form>
+            </div>
+            <div class="col-md-6">
+                <h1>Sign Up</h1>
+                <form id="signUpForm">
+                    <label>username: <input name="username" placeholder="Username" type="text"></label>
+                    <br />
+                    <label>password: <input name="password" placeholder="Password" type="password"></label>
+                    <br />
+                    <input type="submit" value="Sign Up">
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <% include ../partials/scripts %>
+
+    <script>
+        $('#signInForm').on('submit', function(e) {
+
+            $.ajax({
+                url: '/signin',
+                type: 'POST',
+                data: {
+                    'username': $('#signInForm input[name="username"]').val(),
+                    'password': $('#signInForm input[name="password"]').val()
+                },
+                success: function(data) {
+                    location.reload();
+                },
+                error: function(xhr, status, error) {
+                    alert(xhr.responseText + ' (' + xhr.status + ')');
+                }
+            });
+
+            return false;
+        });
+
+        $('#signUpForm').on('submit', function() {
+
+            $.ajax({
+                url: '/signup',
+                type: 'POST',
+                data: {
+                    'username': $('#signUpForm input[name="username"]').val(),
+                    'password': $('#signUpForm input[name="password"]').val()
+                },
+                success: function(data) {
+                    alert(JSON.stringify(data));
+                },
+                error: function(xhr, status, error) {
+                    alert(xhr.responseText + ' (' + xhr.status + ')');
+                }
+            });
+
+            return false;
+        });
+    </script>
+</body>
+
+</html>
