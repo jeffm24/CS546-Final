@@ -28,17 +28,17 @@ body {
 }
 
 /* overriding jquery styling */
-.ui-tooltip {
+.ui-autocomplete {
     background: lightgrey;
     color: white;
     border: none !important;
-    border-radius: 0px;
+    border-radius: 2px;
     box-shadow: 0px 1px 1px rgba(0,0,0,0.5);
     padding: 0px !important;
-}
-.ui-autocomplete {
-    background: rgba(0,0,0,0);
-    border-radius: 0px;
+    max-height: 300px;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    z-index: 9999 !important;
 }
 .ui-autocomplete.source:hover {
     background: #17ac7e;
@@ -139,11 +139,12 @@ body {
  */
 
 /* searchBar affix styling */
-.affix#searchBar{
+.affix#searchBar {
     top:0;
-    left:30%;
-    width: 40%;
+    left: 50%;
+    width:  40%;
     margin-top: 8px;
+    margin-left: -20%; /* Half of the width */
     z-index: 9999 !important;
 }
 .navbar {
@@ -152,6 +153,10 @@ body {
 .affix ~ .container {
    position: relative;
    top: 50px;
+}
+
+#searchBtn {
+    height: 34px;
 }
 
 .tickerItem {
