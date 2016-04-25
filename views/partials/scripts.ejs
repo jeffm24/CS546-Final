@@ -12,7 +12,9 @@
     <!-- Sweetalert scripts -->
     <script src="/assets/js/sweetalert.min.js"></script>
 
+    <!-- Scripts we made -->
     <script>
+    //For signout
     $('#signOutBtn').on('click', function(e) {
 
         $.ajax({
@@ -27,4 +29,6 @@
         });
 
     });
+    //For search bar pixles from top
+    $('#searchBar').data("offset-top", $('#searchBar').offset().top);
     </script>

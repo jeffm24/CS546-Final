@@ -5,13 +5,24 @@
     <% include ../partials/head %>
 </head>
 
-<body>
+<body data-spy="scroll" data-target="#searchBar">
     <%- include('../partials/nav', {showUserDropdown: true}); %>
 
         <div class="container">
             <div class="page-header">
                 <h1>Profile <small>(<%= username %>)</small></h1>
             </div>
+            <div class="page-header">
+                <h2>Search: </h2>
+            </div>
+
+            <div id="searchBar" class="input-group" data-spy="affix">
+              <input type="text" class="form-control" placeholder="Search for...">
+              <span class="input-group-btn">
+                <button class="btn btn-secondary" type="button">Go!</button>
+              </span>
+            </div>
+
             <h2>Accordion Example</h2>
             <p><strong>Note:</strong> The <strong>data-parent</strong> attribute makes sure that all collapsible elements under the specified parent will be closed when one of the collapsible item is shown.</p>
             <div class="panel-group" id="accordion">
@@ -19,6 +30,17 @@
                 <%- include('../partials/tickerItem.ejs', {collapseNum: 1}); %>
                 <%- include('../partials/tickerItem.ejs', {collapseNum: 2}); %>
                 <%- include('../partials/tickerItem.ejs', {collapseNum: 3}); %>
+                <%- include('../partials/tickerItem.ejs', {collapseNum: 4}); %>
+                <%- include('../partials/tickerItem.ejs', {collapseNum: 5}); %>
+                <%- include('../partials/tickerItem.ejs', {collapseNum: 6}); %>
+                <%- include('../partials/tickerItem.ejs', {collapseNum: 7}); %>
+                <%- include('../partials/tickerItem.ejs', {collapseNum: 8}); %>
+                <%- include('../partials/tickerItem.ejs', {collapseNum: 9}); %>
+                <%- include('../partials/tickerItem.ejs', {collapseNum: 10}); %>
+                <%- include('../partials/tickerItem.ejs', {collapseNum: 11}); %>
+                <%- include('../partials/tickerItem.ejs', {collapseNum: 12}); %>
+                <%- include('../partials/tickerItem.ejs', {collapseNum: 13}); %>
+                <%- include('../partials/tickerItem.ejs', {collapseNum: 14}); %>
             </div>
         </div>
         <% include ../partials/scripts %>

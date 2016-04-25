@@ -108,3 +108,19 @@ body {
 	background-color: #1CA347;
 	border-color: #1CA347;
 }
+
+/* Stuff added for our code */
+.affix#searchBar{
+    top:0;
+    left:300px;
+    width: 40%;
+    margin-top: 8px;
+    z-index: 9999 !important;
+}
+.navbar {
+    margin-bottom: 0px;
+}
+.affix ~ .container {
+   position: relative;
+   top: 50px;
+}
