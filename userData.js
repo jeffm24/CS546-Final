@@ -6,7 +6,7 @@ var MongoClient = require('mongodb').MongoClient,
 var fullMongoUrl = settings.mongoConfig.serverUrl + settings.mongoConfig.database;
 var exports = module.exports = {};
 
-// Drop "users" collection if it already exists and then re-create it
+// Create "users" collection if it does not already exist
 MongoClient.connect(fullMongoUrl)
     .then(function(db) {
         return db.createCollection("users");

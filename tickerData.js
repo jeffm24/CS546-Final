@@ -1,54 +1,57 @@
 var MongoClient = require('mongodb').MongoClient,
     settings = require('./config.js'),
-    Guid = require('Guid'),
-    bcrypt = require('bcrypt-nodejs');
+    //Guid = require('Guid'),
+    Converter = require("csvtojson").Converter;
 
 var fullMongoUrl = settings.mongoConfig.serverUrl + settings.mongoConfig.database;
 var exports = module.exports = {};
 
-// Drop "users" collection if it already exists and then re-create it
+// Create "tickers" collection if it does not already exist
 MongoClient.connect(fullMongoUrl)
     .then(function(db) {
-        return db.createCollection("users");
+        db.createCollection("tickers");
+
+        var tickerCollection = db.collection("tickers");
+        var converter = new Converter({});
+
+        // Populate tickers collection
+        converter.fromFile("./static/csv/companylist_NASDAQ.csv", function (err, tickers) {
+            if (tickers) {
+                for (ticker of tickers) {
+                    tickerCollection.update({symbol: ticker.Symbol}, {symbol: ticker.Symbol, name: ticker.Name, market: 'NASDAQ'}, {upsert: true});
+                }
+            } else {
+                console.log(err);
+            }
+        });
+        converter.fromFile("./static/csv/companylist_NYSE.csv", function (err, tickers) {
+            if (tickers) {
+                for (ticker of tickers) {
+                    tickerCollection.update({symbol: ticker.Symbol}, {symbol: ticker.Symbol, name: ticker.Name, market: 'NYSE'}, {upsert: true});
+                }
+            } else {
+                console.log(err);
+            }
+        });
+
+        return true;
     });
 
 // Exported mongo functions
 MongoClient.connect(fullMongoUrl)
     .then(function(db) {
-        var usersCollection = db.collection("users");
+        var tickerCollection = db.collection("tickers");
 
-        // Adds a new user if one does not already exist with the given username
-        exports.addUser = function (username, password, confirm) {
+        // Searches the database given a search and returns an array of all matched documents
+        exports.getTickerSearchSuggestions = function(search) {
+            if (search && search.length > 0) {
+                var searchRegex = new RegExp("^" + search + "(.)*$");
 
-            // Error checking
-            if (!username || !password || !confirm) {
-                return Promise.reject("Please make sure to fill out all fields.");
-            } else if (typeof username !== 'string' || typeof password !== 'string') {
-                return Promise.reject("Arguments not correct type.");
-            } else if (password !== confirm) {
-                return Promise.reject("Please make sure your passwords match.");
+                return tickerCollection.find({symbol: { $regex: searchRegex, $options: 'i' }}).toArray().then(function(listOfTickers) {
+                    return listOfTickers;
+                });
+            } else {
+                return Promise.reject(true);
             }
-
-            return usersCollection.find({"username": username}).limit(1).toArray().then(function(listOfUsers) {
-                if (listOfUsers.length !== 0) {
-                    return Promise.reject("A user with that username already exists.");
-                } else {
-                    return bcrypt.hash(password, null, null, function(err, hash) {
-                        // Store hash in your password DB.
-                        return usersCollection.insertOne({
-                            _id: Guid.create().toString(),
-                            username: username,
-                            encryptedPassword: hash,
-                            currentSessionId: "",
-                            profile: {
-                                firstName: "",
-                                lastName: "",
-                                hobby: "",
-                                petName: ""
-                            }
-                        });
-                    });
-                }
-            });
         };
     });

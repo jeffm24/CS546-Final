@@ -1,5 +1,6 @@
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="http://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
 
     <!-- jQuery fallback -->
     <script>
@@ -14,21 +15,47 @@
 
     <!-- Scripts we made -->
     <script>
-    //For signout
-    $('#signOutBtn').on('click', function(e) {
+        //For signout
+        $('#signOutBtn').on('click', function(e) {
 
-        $.ajax({
-            url: '/signout',
-            type: 'POST',
-            success: function(data) {
-                location.reload();
-            },
-            error: function(xhr, status, error) {
-                alert(xhr.responseText + ' (' + xhr.status + ')');
-            }
+            $.ajax({
+                url: '/signout',
+                type: 'POST',
+                success: function(data) {
+                    location.reload();
+                },
+                error: function(xhr, status, error) {
+                    alert(xhr.responseText + ' (' + xhr.status + ')');
+                }
+            });
+
         });
 
-    });
-    //For search bar pixles from top
-    $('#searchBar').data("offset-top", $('#searchBar').offset().top);
+        //For search bar pixles from top
+        $('#searchBar').data("offset-top", $('#searchBar').offset().top);
+
+        //dynamic search suggestions
+        $('#searchBarInput').on('input propertychange paste', function() {
+            $.ajax({
+                url: '/getTickerSearchSuggestions',
+                type: 'POST',
+                data: {
+                    search: $('#searchBarInput').val()
+                },
+                success: function(data) {
+                    var listOfSymbols = [];
+
+                    for (ticker of data.suggestions) {
+                        listOfSymbols.push(ticker.symbol);
+                    }
+
+                    $('#searchBarInput').autocomplete({
+                        source: listOfSymbols
+                    });
+                },
+                error: function(xhr, status, error) {
+                    console.log(xhr.responseText + ' (' + xhr.status + ')');
+                }
+            });
+        });
     </script>

@@ -10,7 +10,7 @@ body {
     text-shadow: 0px 1px 1px rgba(0,0,0,0.5);
 }
 
-/* over-riding bootstrap styling */
+/* overriding bootstrap styling */
 .btn-primary, .btn-primary:focus:active {
     background-color: #17ac7e;
     border: none;
@@ -25,6 +25,34 @@ body {
 }
 .btn-primary:active, .btn-primary.active {
     background-color: #1ce2a5;
+}
+
+/* overriding jquery styling */
+.ui-tooltip {
+    background: lightgrey;
+    color: white;
+    border: none !important;
+    border-radius: 0px;
+    box-shadow: 0px 1px 1px rgba(0,0,0,0.5);
+    padding: 0px !important;
+}
+.ui-autocomplete {
+    background: rgba(0,0,0,0);
+    border-radius: 0px;
+}
+.ui-autocomplete.source:hover {
+    background: #17ac7e;
+}
+
+.ui-menu .ui-menu-item a{
+    background: lightgrey;
+    border-radius: 0px;
+    border: none;
+    margin: 0px;
+}
+.ui-menu .ui-menu-item a:hover{
+    background: #17ac7e;
+    color: white;
 }
 
 /*

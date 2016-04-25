@@ -2,7 +2,8 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
-var userData = require('./data.js');
+var userData = require('./userData.js');
+var tickerData = require('./tickerData.js')
 
 // We create our express isntance:
 var app = express();
@@ -58,6 +59,26 @@ app.get("/profile", function(request, response) {
     }
 
 });
+
+//
+app.get("/account", function(request, response){
+  // If the user is logged in, render the profile page, otherwise redirect to '/'
+  if (response.locals.user) {
+      var user = response.locals.user;
+
+      response.render('pages/editAccount', {
+          pageTitle: 'Edit Account',
+          username: user.username,
+          firstName: user.profile.firstName,
+          lastName: user.profile.lastName,
+          hobby: user.profile.hobby,
+          petName: user.profile.petName
+      });
+  } else {
+      response.redirect('/');
+  }
+});
+
 
 // Updates user info using the given request body
 app.post("/profile/editUserInfo", function(request, response) {
@@ -150,24 +171,17 @@ app.post("/register", function(request, response) {
 
 });
 
-//
-app.get("/account", function(request, response){
-  // If the user is logged in, render the profile page, otherwise redirect to '/'
-  if (response.locals.user) {
-      var user = response.locals.user;
+// Route for getting ticker suggestions based on a given search
+app.post("/getTickerSearchSuggestions", function(request, response) {
 
-      response.render('pages/editAccount', {
-          pageTitle: 'Edit Account',
-          username: user.username,
-          firstName: user.profile.firstName,
-          lastName: user.profile.lastName,
-          hobby: user.profile.hobby,
-          petName: user.profile.petName
-      });
-  } else {
-      response.redirect('/');
-  }
+    tickerData.getTickerSearchSuggestions(request.body.search).then(function(result) {
+        response.json({suggestions: result});
+    }, function(errorMessage) {
+        response.json()
+    });
+
 });
+
 
 // We can now navigate to localhost:3000
 app.listen(3000, function() {
