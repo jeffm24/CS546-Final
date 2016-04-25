@@ -6,7 +6,7 @@
 </head>
 
 <body>
-    <%- include('../partials/nav', {showLinks: true}); %>
+    <%- include('../partials/nav', {showUserDropdown: true}); %>
 
     <div class="container">
         <div class="page-header">
@@ -43,8 +43,6 @@
                 </form>
             </div>
         </div>
-        <hr />
-        <button id="signOutBtn" type="button" class="btn btn-danger">Sign Out</button>
     </div>
 
     <% include ../partials/scripts %>
@@ -70,21 +68,6 @@
             });
 
             return false;
-        });
-
-        $('#signOutBtn').on('click', function(e) {
-
-            $.ajax({
-                url: '/signout',
-                type: 'POST',
-                success: function(data) {
-                    location.reload();
-                },
-                error: function(xhr, status, error) {
-                    alert(xhr.responseText + ' (' + xhr.status + ')');
-                }
-            });
-
         });
     </script>
 </body>

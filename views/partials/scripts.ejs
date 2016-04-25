@@ -11,3 +11,20 @@
 
     <!-- Sweetalert scripts -->
     <script src="/assets/js/sweetalert.min.js"></script>
+
+    <script>
+    $('#signOutBtn').on('click', function(e) {
+
+        $.ajax({
+            url: '/signout',
+            type: 'POST',
+            success: function(data) {
+                location.reload();
+            },
+            error: function(xhr, status, error) {
+                alert(xhr.responseText + ' (' + xhr.status + ')');
+            }
+        });
+
+    });
+    </script>
