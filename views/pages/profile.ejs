@@ -15,16 +15,16 @@
             <div class="page-header">
                 <h2>Search: </h2>
             </div>
-
             <div id="searchBar" class="input-group" data-spy="affix">
-              <input type="text" class="form-control" placeholder="Search for...">
-              <span class="input-group-btn">
-                <button class="btn btn-secondary" type="button">Go!</button>
-              </span>
+                <input type="text" class="form-control" placeholder="Search for...">
+                <span class="input-group-btn">
+                    <button class="btn btn-primary" type="button">Go!</button>
+                </span>
             </div>
 
-            <h2>Accordion Example</h2>
-            <p><strong>Note:</strong> The <strong>data-parent</strong> attribute makes sure that all collapsible elements under the specified parent will be closed when one of the collapsible item is shown.</p>
+            <div class="page-header">
+                <h2>My Tickers: </h2>
+            </div>
             <div class="panel-group" id="accordion">
                 <%- include('../partials/tickerItem.ejs', {collapseNum: 0}); %>
                 <%- include('../partials/tickerItem.ejs', {collapseNum: 1}); %>

@@ -5,7 +5,45 @@ html {
 body {
     padding-top: 70px;
     height: 100%;
+    background-color: #303032;
+    color: rgb(230,230,230);
+    text-shadow: 0px 1px 1px rgba(0,0,0,0.5);
 }
+
+/* over-riding bootstrap styling */
+.btn-primary {
+    background-color: #17ac7e;
+}
+.btn-primary:hover {
+    background-color: #01875e;
+}
+.btn-primary:focus {
+    background-color: #1ce2a5;
+}
+.btn-primary:active, .btn-primary.active {
+    background-color: #1ce2a5;
+}
+
+/*
+ * -----------------------------------------------------------------
+ * Nav Styling
+ * -----------------------------------------------------------------
+ */
+
+.navbar-right {
+    text-align: right;
+}
+
+#signOutBtn {
+    float: right;
+    margin: 5px 10px;
+}
+
+/*
+ * -----------------------------------------------------------------
+ * Login/Register Page Styling
+ * -----------------------------------------------------------------
+ */
 
 .panel-login-container {
     position: relative;
@@ -17,11 +55,12 @@ body {
 	-webkit-box-shadow: 0px 2px 3px 0px rgba(0,0,0,0.2);
 	-moz-box-shadow: 0px 2px 3px 0px rgba(0,0,0,0.2);
 	box-shadow: 0px 2px 3px 0px rgba(0,0,0,0.2);
+    background-color: #212124;
+    border: none;
+    box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.5);
 }
 .panel-login>.panel-heading {
 	color: #00415d;
-	background-color: #fff;
-	border-color: #fff;
 	text-align:center;
 }
 .panel-login>.panel-heading a{
@@ -43,7 +82,8 @@ body {
 	clear: both;
 	border: 0;
 	height: 1px;
-	background-image: -webkit-linear-gradient(left,rgba(0, 0, 0, 0),rgba(0, 0, 0, 0.15),rgba(0, 0, 0, 0));
+    background-color: rgb(230,230,230);
+    background-image: -webkit-linear-gradient(left,rgba(0, 0, 0, 0),rgba(0, 0, 0, 0.15),rgba(0, 0, 0, 0));
 	background-image: -moz-linear-gradient(left,rgba(0,0,0,0),rgba(0,0,0,0.15),rgba(0,0,0,0));
 	background-image: -ms-linear-gradient(left,rgba(0,0,0,0),rgba(0,0,0,0.15),rgba(0,0,0,0));
 	background-image: -o-linear-gradient(left,rgba(0,0,0,0),rgba(0,0,0,0.15),rgba(0,0,0,0));
@@ -109,7 +149,13 @@ body {
 	border-color: #1CA347;
 }
 
-/* Stuff added for our code */
+/*
+ * -----------------------------------------------------------------
+ * Profile Page Styling
+ * -----------------------------------------------------------------
+ */
+
+/* searchBar affix styling */
 .affix#searchBar{
     top:0;
     left:300px;
@@ -123,4 +169,20 @@ body {
 .affix ~ .container {
    position: relative;
    top: 50px;
+}
+
+.tickerItem {
+    background-color: #212124;
+    border-radius: 0px;
+    border: none;
+    box-show: 0px 1px 1px rgba(0,0,0,0.5);
+}
+
+.tickerItem > a {
+    text-decoration: none;
+    color: white;
+}
+
+.tickerItem > a:hover {
+    color: grey;
 }
