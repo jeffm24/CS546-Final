@@ -8,68 +8,20 @@
 <body>
     <%- include('../partials/nav', {showUserDropdown: true}); %>
 
-    <div class="container">
-        <div class="page-header">
-            <h1>Profile <small>(<%= username %>)</small></h1>
-        </div>
-        <ul>
-            <li><b>First Name:</b> <%= firstName %></li>
-            <li><b>Last Name:</b> <%= lastName %></li>
-            <li><b>Hobby:</b> <%= hobby %></li>
-            <li><b>Pet Name:</b> <%= petName %></li>
-        </ul>
-        <hr />
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h2 class="panel-title">Edit Profile Info</h2>
+        <div class="container">
+            <div class="page-header">
+                <h1>Profile <small>(<%= username %>)</small></h1>
             </div>
-            <div class="panel-body">
-                <form id="editInfoForm">
-                    <div class="form-group">
-                        <label>First Name: <input class="form-control" name="firstName" placeholder="First Name" type="text" value=<%= firstName %>></label>
-                    </div>
-                    <div class="form-group">
-                        <label>Last Name: <input class="form-control" name="lastName" placeholder="Last Name" type="text" value=<%= lastName %>></label>
-                    </div>
-                    <div class="form-group">
-                        <label>Hobby: <input class="form-control" name="hobby" placeholder="Hobby" type="text" value=<%= hobby %>></label>
-                    </div>
-                    <div class="form-group">
-                        <label>Pet Name: <input class="form-control" name="petName" placeholder="Pet Name" type="text" value=<%= petName %>></label>
-                    </div>
-                    <div class="form-group">
-                        <input class="btn btn-primary" type="submit" value="Submit">
-                    </div>
-                </form>
+            <h2>Accordion Example</h2>
+            <p><strong>Note:</strong> The <strong>data-parent</strong> attribute makes sure that all collapsible elements under the specified parent will be closed when one of the collapsible item is shown.</p>
+            <div class="panel-group" id="accordion">
+                <%- include('../partials/tickerItem.ejs', {collapseNum: 0}); %>
+                <%- include('../partials/tickerItem.ejs', {collapseNum: 1}); %>
+                <%- include('../partials/tickerItem.ejs', {collapseNum: 2}); %>
+                <%- include('../partials/tickerItem.ejs', {collapseNum: 3}); %>
             </div>
         </div>
-    </div>
-
-    <% include ../partials/scripts %>
-
-    <script>
-        $('#editInfoForm').on('submit', function(e) {
-
-            $.ajax({
-                url: '/profile/editUserInfo',
-                type: 'POST',
-                data: {
-                    'firstName': $('#editInfoForm input[name="firstName"]').val(),
-                    'lastName': $('#editInfoForm input[name="lastName"]').val(),
-                    'hobby': $('#editInfoForm input[name="hobby"]').val(),
-                    'petName': $('#editInfoForm input[name="petName"]').val()
-                },
-                success: function(data) {
-                    location.reload();
-                },
-                error: function(xhr, status, error) {
-                    alert(xhr.responseText + ' (' + xhr.status + ')');
-                }
-            });
-
-            return false;
-        });
-    </script>
+        <% include ../partials/scripts %>
 </body>
 
 </html>

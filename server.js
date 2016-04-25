@@ -52,10 +52,6 @@ app.get("/profile", function(request, response) {
         response.render('pages/profile', {
             pageTitle: 'Profile',
             username: user.username,
-            firstName: user.profile.firstName,
-            lastName: user.profile.lastName,
-            hobby: user.profile.hobby,
-            petName: user.profile.petName
         });
     } else {
         response.redirect('/');
@@ -152,6 +148,25 @@ app.post("/register", function(request, response) {
         reponse.status(500).json({error: "User already signed in."})
     }
 
+});
+
+//
+app.get("/account", function(request, response){
+  // If the user is logged in, render the profile page, otherwise redirect to '/'
+  if (response.locals.user) {
+      var user = response.locals.user;
+
+      response.render('pages/editAccount', {
+          pageTitle: 'Edit Account',
+          username: user.username,
+          firstName: user.profile.firstName,
+          lastName: user.profile.lastName,
+          hobby: user.profile.hobby,
+          petName: user.profile.petName
+      });
+  } else {
+      response.redirect('/');
+  }
 });
 
 // We can now navigate to localhost:3000
