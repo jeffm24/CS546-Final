@@ -2,8 +2,9 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var cookieParser = require('cookie-parser');
+var httpRequest = require('request');
 var userData = require('./userData.js');
-var tickerData = require('./tickerData.js')
+var tickerData = require('./tickerData.js');
 
 // We create our express isntance:
 var app = express();
@@ -52,7 +53,7 @@ app.get("/profile", function(request, response) {
 
         response.render('pages/profile', {
             pageTitle: 'Profile',
-            username: user.username,
+            username: user.username
         });
     } else {
         response.redirect('/');
@@ -177,11 +178,22 @@ app.post("/getTickerSearchSuggestions", function(request, response) {
     tickerData.getTickerSearchSuggestions(request.body.search).then(function(result) {
         response.json({suggestions: result});
     }, function(errorMessage) {
-        response.json()
+        response.json({error: errorMessage});
     });
 
 });
 
+// Search route
+app.post("/search", function(request, response) {
+    httpRequest('https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20yahoo.finance.quotes%20where%20symbol%20in%20(%22' + request.body.search + '%22)%0A%09%09&format=json&env=http%3A%2F%2Fdatatables.org%2Falltables.env&callback=', function (error, data, body) {
+        if (!error && data.statusCode == 200) {
+            var quote = JSON.parse(body).query.results.quote;
+            response.json({result: quote});
+        } else {
+            response.json({error: error});
+        }
+    });
+});
 
 // We can now navigate to localhost:3000
 app.listen(3000, function() {

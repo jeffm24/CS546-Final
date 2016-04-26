@@ -1,6 +1,5 @@
 var MongoClient = require('mongodb').MongoClient,
     settings = require('./config.js'),
-    //Guid = require('Guid'),
     Converter = require("csvtojson").Converter;
 
 var fullMongoUrl = settings.mongoConfig.serverUrl + settings.mongoConfig.database;
@@ -15,7 +14,7 @@ MongoClient.connect(fullMongoUrl)
         var converter = new Converter({});
 
         // Populate tickers collection
-        converter.fromFile("./static/csv/companylist_NASDAQ.csv", function (err, tickers) {
+        converter.fromFile("./static/csv/NASDAQ.csv", function (err, tickers) {
             if (tickers) {
                 for (ticker of tickers) {
                     tickerCollection.update({symbol: ticker.Symbol}, {symbol: ticker.Symbol, name: ticker.Name, market: 'NASDAQ'}, {upsert: true});
@@ -24,10 +23,19 @@ MongoClient.connect(fullMongoUrl)
                 console.log(err);
             }
         });
-        converter.fromFile("./static/csv/companylist_NYSE.csv", function (err, tickers) {
+        converter.fromFile("./static/csv/NYSE.csv", function (err, tickers) {
             if (tickers) {
                 for (ticker of tickers) {
                     tickerCollection.update({symbol: ticker.Symbol}, {symbol: ticker.Symbol, name: ticker.Name, market: 'NYSE'}, {upsert: true});
+                }
+            } else {
+                console.log(err);
+            }
+        });
+        converter.fromFile("./static/csv/AMEX.csv", function (err, tickers) {
+            if (tickers) {
+                for (ticker of tickers) {
+                    tickerCollection.update({symbol: ticker.Symbol}, {symbol: ticker.Symbol, name: ticker.Name, market: 'AMEX'}, {upsert: true});
                 }
             } else {
                 console.log(err);
@@ -54,4 +62,23 @@ MongoClient.connect(fullMongoUrl)
                 return Promise.reject(true);
             }
         };
+
+        /*
+        exports.isStockUpToDate = function(stockSymbol) {
+            return tickerCollection.find({symbol: stockSymbol}).toArray().then(function(listOfTickers) {
+                //
+                if (listOfTickers.length) {
+                    var ticker = listOfTickers[0];
+
+                    if (ticker.lastDate) {
+
+                    } else {
+                        return false;
+                    }
+                } else {
+                    return Promise.reject("Could not find stock ticker.");
+                }
+            });
+        };
+        */
     });
