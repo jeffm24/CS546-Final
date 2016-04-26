@@ -178,21 +178,61 @@ app.post("/getTickerSearchSuggestions", function(request, response) {
     tickerData.getTickerSearchSuggestions(request.body.search).then(function(result) {
         response.json({suggestions: result});
     }, function(errorMessage) {
-        response.json({error: errorMessage});
+        response.status(500).json({error: errorMessage});
     });
 
 });
 
 // Search route
 app.post("/search", function(request, response) {
-    httpRequest('https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20yahoo.finance.quotes%20where%20symbol%20in%20(%22' + request.body.search + '%22)%0A%09%09&format=json&env=http%3A%2F%2Fdatatables.org%2Falltables.env&callback=', function (error, data, body) {
-        if (!error && data.statusCode == 200) {
-            var quote = JSON.parse(body).query.results.quote;
-            response.json({result: quote});
+
+    // Check if the ticker is up to date in the database before querying yahoo finance
+    tickerData.isTickerUpToDate(request.body.search).then(function(upToDate) {
+
+        if (upToDate) {
+            console.log("Ticker info for " + request.body.search + " up to date.");
+
+            // If the ticker is up to date, then just get the ticker info from the database and respond with it
+            tickerData.getTickerInfo(request.body.search).then(function(tickerInfo) {
+                console.log("Got info from database for " + request.body.search + ".");
+
+                // Success respond with tickerInfo
+                response.json({result: tickerInfo});
+            });
         } else {
-            response.json({error: error});
+            console.log("Ticker info for " + request.body.search + " not up to date.");
+
+            // If the ticker is not up to date, then query yahoo finance and update it before responding
+            httpRequest('https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20yahoo.finance.quotes%20where%20symbol%20in%20(%22' + request.body.search + '%22)%0A%09%09&format=json&env=http%3A%2F%2Fdatatables.org%2Falltables.env&callback=', function (error, data, body) {
+                if (!error && data.statusCode == 200) {
+
+                    var query = JSON.parse(body).query;
+                    var lastQueried = new Date(query.created);
+                    var info = query.results.quote;
+
+                    // Check to see if actual data was recieved
+                    if (info.Ask) {
+                        console.log("Updating info in database for " + request.body.search + ".");
+
+                        tickerData.refreshTicker(request.body.search, lastQueried, info).then(function(tickerInfo) {
+                            console.log("Updated info in database for " + request.body.search + ".");
+
+                            // Success respond with tickerInfo
+                            response.json({result: tickerInfo});
+                        });
+                    } else {
+                        response.json({result: "Query returned no results.", notFound: true});
+                    }
+                } else {
+                    response.status(500).json({error: error});
+                }
+            });
         }
+
+    }, function(errorMessage) {
+        response.json({result: errorMessage, notFound: true});
     });
+
 });
 
 // We can now navigate to localhost:3000

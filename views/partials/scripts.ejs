@@ -44,31 +44,37 @@
 
         //dynamic search suggestions
         $('#searchBarInput').on('input propertychange paste', function() {
-            $.ajax({
-                url: '/getTickerSearchSuggestions',
-                type: 'POST',
-                data: {
-                    search: $('#searchBarInput').val()
-                },
-                success: function(data) {
-                    var listOfSymbols = [];
 
-                    for (ticker of data.suggestions) {
-                        listOfSymbols.push(ticker.symbol);
+            if ($('#searchBarInput').val()) {
+                $.ajax({
+                    url: '/getTickerSearchSuggestions',
+                    type: 'POST',
+                    data: {
+                        search: $('#searchBarInput').val()
+                    },
+                    success: function(data) {
+                        if (data) {
+                            var listOfSymbols = [];
+
+                            for (ticker of data.suggestions) {
+                                listOfSymbols.push(ticker.symbol);
+                            }
+
+                            $('#searchBarInput').autocomplete({
+                                source: listOfSymbols
+                            });
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.log(xhr.responseText + ' (' + xhr.status + ')');
                     }
+                });
+            }
 
-                    $('#searchBarInput').autocomplete({
-                        source: listOfSymbols
-                    });
-                },
-                error: function(xhr, status, error) {
-                    console.log(xhr.responseText + ' (' + xhr.status + ')');
-                }
-            });
         });
 
-        //Search click
-        $('#searchBtn').click(function(e) {
+        //Search submit
+        $('#searchForm').submit(function(e) {
             $.ajax({
                 url: '/search',
                 type: 'POST',
@@ -76,20 +82,30 @@
                     search: $('#searchBarInput').val().toUpperCase()
                 },
                 success: function(data) {
-                    var quote = data.result;
+                    if (data.notFound) {
+                        swal({
+                            title: "Error!",
+                            text: data.result,
+                            type: "error",
+                            confirmButtonText: "OK"
+                        });
+                    } else {
+                        var quote = data.result;
+                        console.log(data.result);
 
-                    $('#searchResult').html('<div class="panel panel-default tickerItem">' +
-                        '<a data-toggle="collapse" data-parent="#accordion" href="#collapseSearch">' +
-                            '<div class="panel-heading">' +
-                                '<h4 class="panel-title">' + quote.Symbol + '</h4>' +
+                        $('#searchResult').html('<div class="panel panel-default tickerItem">' +
+                            '<a data-toggle="collapse" data-parent="#accordion" href="#collapseSearch">' +
+                                '<div class="panel-heading">' +
+                                    '<h4 class="panel-title">' + quote.Symbol + '</h4>' +
+                                '</div>' +
+                            '</a>' +
+                            '<div id="collapseSearch" class="panel-collapse collapse in">' +
+                                '<div class="panel-body">' +
+                                    '<img src="/assets/images/tempStockSection.png" style="max-width: 100% ; width: 100%"/>' +
+                                '</div>' +
                             '</div>' +
-                        '</a>' +
-                        '<div id="collapseSearch" class="panel-collapse collapse in">' +
-                            '<div class="panel-body">' +
-                                '<img src="/assets/images/tempStockSection.png" style="max-width: 100% ; width: 100%"/>' +
-                            '</div>' +
-                        '</div>' +
-                    '</div>');
+                        '</div>');
+                    }
                 },
                 error: function(xhr, status, error) {
                     swal({
@@ -100,5 +116,7 @@
                     });
                 }
             });
+
+            return false;
         });
     </script>
