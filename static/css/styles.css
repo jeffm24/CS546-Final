@@ -159,6 +159,12 @@ body {
     height: 34px;
 }
 
+/*
+ *  -----------------------------------------------------------------
+ *  Ticker Item styling
+ *  -----------------------------------------------------------------
+ */
+
 .tickerItem {
     background-color: #212124;
     border: none;
@@ -178,4 +184,39 @@ body {
 
 .tickerItem > a:hover {
     color: #17ac7e;
+}
+
+.sub-panel {
+    background-color: #303032;
+    border-radius: 3px;
+    box-shadow: 0px 1px 1px rgba(50,50,50,0.8);
+    margin: 10px 2px;
+    padding: 10px;
+}
+
+.stat-panel {
+    padding-left: 30px;
+    padding-right: 30px;
+}
+
+.stat-item {
+    margin: 10px 0px;
+}
+
+.stat-item > * {
+    margin: 0px;
+}
+
+.stat-val {
+    font-weight: bold;
+    font-size: 1.2em;
+}
+
+.stat-name {
+    font-size: 1em;
+    color: grey;
+}
+
+.graph-panel > * {
+    max-width: 100%;
 }

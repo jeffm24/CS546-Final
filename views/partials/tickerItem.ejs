@@ -1,12 +1,71 @@
 <div class="panel panel-default tickerItem">
-    <a data-toggle="collapse" data-parent="#accordion" href="#collapse<%= collapseNum %>">
+    <a data-toggle="collapse" data-parent="#accordion" href="#collapse<%= tickerSymbol %>">
         <div class="panel-heading">
-            <h4 class="panel-title">Collapsible Group <%= collapseNum %></h4>
+            <h4 class="panel-title"><%= tickerSymbol %></h4>
         </div>
     </a>
-    <div id="collapse<%= collapseNum %>" class="panel-collapse collapse out">
+    <div id="collapse<%= tickerSymbol %>" class="panel-collapse collapse out">
         <div class="panel-body">
-          <img src="/assets/images/tempStockSection.png" style="max-width: 100% ; width: 100%"/>
+            <div class="row">
+                <div class="col-xs-12 col-sm-6">
+                    <div class="sub-panel graph-panel">
+                        <img src="/assets/images/graph.png" />
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-6">
+                    <div class="sub-panel stat-panel">
+                        <h4>Statistics</h4>
+                        <hr />
+                        <div class="row">
+                            <div class="col-xs-6">
+                                <div class="stat-item">
+                                    <p class="stat-val">$<%= open %></p>
+                                    <p class="stat-name">Open</p>
+                                </div>
+                                <div class="stat-item">
+                                    <p class="stat-val">$<%= todayHigh %></p>
+                                    <p class="stat-name">Today's High</p>
+                                </div>
+                                <div class="stat-item">
+                                    <p class="stat-val">$<%= todayLow %></p>
+                                    <p class="stat-name">Today's Low</p>
+                                </div>
+                                <div class="stat-item">
+                                    <p class="stat-val">$<%= wkHigh %></p>
+                                    <p class="stat-name">52 Wk High</p>
+                                </div>
+                                <div class="stat-item">
+                                    <p class="stat-val">$<%= wkLow %></p>
+                                    <p class="stat-name">52 Wk Low</p>
+                                </div>
+                            </div>
+                            <div class="col-xs-6">
+                                <div class="stat-item">
+                                    <p class="stat-val"><%= volume %></p>
+                                    <p class="stat-name">Volume</p>
+                                </div>
+                                <div class="stat-item">
+                                    <p class="stat-val"><%= avgVolume %></p>
+                                    <p class="stat-name">Average Volume</p>
+                                </div>
+                                <div class="stat-item">
+                                    <p class="stat-val">$<%= marketCap %></p>
+                                    <p class="stat-name">Market Cap</p>
+                                </div>
+                                <div class="stat-item">
+                                    <p class="stat-val"><%= peRatio %></p>
+                                    <p class="stat-name">P/E Ratio</p>
+                                </div>
+                                <div class="stat-item">
+                                    <p class="stat-val"><%= divYield %></p>
+                                    <p class="stat-name">Div/Yield</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--<img src="/assets/images/tempStockSection.png" style="max-width: 100% ; width: 100%"/>-->
         </div>
     </div>
 </div>

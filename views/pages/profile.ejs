@@ -29,21 +29,59 @@
                 <h2>My Tickers: </h2>
             </div>
             <div class="panel-group" id="accordion">
-                <%- include('../partials/tickerItem.ejs', {collapseNum: 0}); %>
-                <%- include('../partials/tickerItem.ejs', {collapseNum: 1}); %>
-                <%- include('../partials/tickerItem.ejs', {collapseNum: 2}); %>
-                <%- include('../partials/tickerItem.ejs', {collapseNum: 3}); %>
-                <%- include('../partials/tickerItem.ejs', {collapseNum: 4}); %>
-                <%- include('../partials/tickerItem.ejs', {collapseNum: 5}); %>
-                <%- include('../partials/tickerItem.ejs', {collapseNum: 6}); %>
-                <%- include('../partials/tickerItem.ejs', {collapseNum: 7}); %>
-                <%- include('../partials/tickerItem.ejs', {collapseNum: 8}); %>
-                <%- include('../partials/tickerItem.ejs', {collapseNum: 9}); %>
-                <%- include('../partials/tickerItem.ejs', {collapseNum: 10}); %>
-                <%- include('../partials/tickerItem.ejs', {collapseNum: 11}); %>
-                <%- include('../partials/tickerItem.ejs', {collapseNum: 12}); %>
-                <%- include('../partials/tickerItem.ejs', {collapseNum: 13}); %>
-                <%- include('../partials/tickerItem.ejs', {collapseNum: 14}); %>
+                <%- include('../partials/tickerItem.ejs', {
+                    tickerSymbol: "AAPL",
+                    open: 165.80,
+                    todayHigh: 167.49,
+                    todayLow: 165.68,
+                    wkHigh: 218.77,
+                    wkLow: 139.05,
+                    volume: 712711,
+                    avgVolume: "3.412M",
+                    marketCap: "68.23B",
+                    peRatio: 13.788,
+                    divYield: 1.56,
+                }); %>
+                <%- include('../partials/tickerItem.ejs', {
+                    tickerSymbol: "MSFT",
+                    open: 165.80,
+                    todayHigh: 167.49,
+                    todayLow: 165.68,
+                    wkHigh: 218.77,
+                    wkLow: 139.05,
+                    volume: 712711,
+                    avgVolume: "3.412M",
+                    marketCap: "68.23B",
+                    peRatio: 13.788,
+                    divYield: 1.56,
+                }); %>
+                <%- include('../partials/tickerItem.ejs', {
+                    tickerSymbol: "GOOG",
+                    open: 165.80,
+                    todayHigh: 167.49,
+                    todayLow: 165.68,
+                    wkHigh: 218.77,
+                    wkLow: 139.05,
+                    volume: 712711,
+                    avgVolume: "3.412M",
+                    marketCap: "68.23B",
+                    peRatio: 13.788,
+                    divYield: 1.56,
+                }); %>
+                <%- include('../partials/tickerItem.ejs', {
+                    tickerSymbol: "FB",
+                    open: 165.80,
+                    todayHigh: 167.49,
+                    todayLow: 165.68,
+                    wkHigh: 218.77,
+                    wkLow: 139.05,
+                    volume: 712711,
+                    avgVolume: "3.412M",
+                    marketCap: "68.23B",
+                    peRatio: 13.788,
+                    divYield: 1.56,
+                }); %>
+
             </div>
         </div>
         <% include ../partials/scripts %>
