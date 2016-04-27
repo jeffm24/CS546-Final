@@ -17,7 +17,9 @@ function buildSearchTickerItem (info) {
     var tickerDataHtml = '<div class="panel panel-default tickerItem">' +
         '<a data-toggle="collapse" data-parent="#accordion" href="#collapse' + info.symbol + '">' +
             '<div class="panel-heading">' +
-                '<h3 class="panel-title">' + info.symbol + ': $' + info.Ask + ' <span id="change-' + info.symbol + '">(' + info.ChangeinPercent + ')</span></h3>' +
+                '<h3 class="panel-title">' + info.symbol + ': $' + info.Ask + ' <span id="change-' + info.symbol + '">(' + info.ChangeinPercent + ')</span>' +
+                    '<button type="button" id="saveTickerBtn" class="btn btn-primary pull-right"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button><div class="clearfix"></div>' +
+                '</h3>' +
             '</div>' +
         '</a>' +
         '<div id="collapse' + info.symbol + '" class="panel-collapse collapse in">' +
