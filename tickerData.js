@@ -116,13 +116,39 @@ MongoClient.connect(fullMongoUrl)
                     var ticker = listOfTickers[0];
 
                     if (ticker.info) {
-                        return listOfTickers[0].info;
+                        return ticker.info;
                     } else {
                         return Promise.reject("No info has been set for this ticker.");
                     }
 
                 } else {
                     return Promise.reject("Could not find stock ticker.");
+                }
+            });
+        };
+
+        // Returns the info fields of the tickers with the given symbols
+        exports.getMultTickerInfo = function(symbols) {
+
+            // Try to find ticker in the database
+            return tickerCollection.find({symbol: {$in: symbols}}).toArray().then(function(listOfTickers) {
+                // Check if tickers were found
+                if (listOfTickers.length) {
+                    var infoList = [];
+
+                    for (ticker of listOfTickers) {
+                        if (ticker.info.ChangeinPercent.charAt(0) === '+') {
+                            ticker.info.change = "positive";
+                        } else {
+                            ticker.info.change = "negative";
+                        }
+
+                        infoList.push(ticker.info);
+                    }
+
+                    return infoList;
+                } else {
+                    return Promise.reject("Could not find stock tickers.");
                 }
             });
         };

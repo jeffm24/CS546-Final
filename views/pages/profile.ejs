@@ -28,73 +28,31 @@
             <div class="page-header">
                 <h2>My Tickers: </h2>
             </div>
-            <div class="panel-group" id="accordion">
-                <%- include('../partials/tickerItem.ejs', {
-                    tickerSymbol: "AAPL",
-                    askPrice: 700.00,
-                    changeinPercent: "-2.08%",
-                    open: 165.80,
-                    todayHigh: 167.49,
-                    todayLow: 165.68,
-                    wkHigh: 218.77,
-                    wkLow: 139.05,
-                    volume: 712711,
-                    avgVolume: "3.412M",
-                    marketCap: "68.23B",
-                    peRatio: 13.788,
-                    divYield: 1.56,
-                    change: "negative"
-                }); %>
-                <%- include('../partials/tickerItem.ejs', {
-                    tickerSymbol: "MSFT",
-                    askPrice: 700.00,
-                    changeinPercent: "+1.08%",
-                    open: 165.80,
-                    todayHigh: 167.49,
-                    todayLow: 165.68,
-                    wkHigh: 218.77,
-                    wkLow: 139.05,
-                    volume: 712711,
-                    avgVolume: "3.412M",
-                    marketCap: "68.23B",
-                    peRatio: 13.788,
-                    divYield: 1.56,
-                    change: "positive"
-                }); %>
-                <%- include('../partials/tickerItem.ejs', {
-                    tickerSymbol: "GOOG",
-                    askPrice: 700.00,
-                    changeinPercent: "+2.08%",
-                    open: 165.80,
-                    todayHigh: 167.49,
-                    todayLow: 165.68,
-                    wkHigh: 218.77,
-                    wkLow: 139.05,
-                    volume: 712711,
-                    avgVolume: "3.412M",
-                    marketCap: "68.23B",
-                    peRatio: 13.788,
-                    divYield: 1.56,
-                    change: "positive"
-                }); %>
-                <%- include('../partials/tickerItem.ejs', {
-                    tickerSymbol: "FB",
-                    askPrice: 700.00,
-                    changeinPercent: "-2.08%",
-                    open: 165.80,
-                    todayHigh: 167.49,
-                    todayLow: 165.68,
-                    wkHigh: 218.77,
-                    wkLow: 139.05,
-                    volume: 712711,
-                    avgVolume: "3.412M",
-                    marketCap: "68.23B",
-                    peRatio: 13.788,
-                    divYield: 1.56,
-                    change: "negative"
-                }); %>
-
-            </div>
+            <% if (tickers.length) { %>
+                <div class="panel-group" id="accordion">
+                    <% for(var i = 0; i < tickers.length; i++) { %>
+                        <%- include('../partials/tickerItem.ejs', {
+                            tickerSymbol: tickers[i].symbol,
+                            changeInPercent: tickers[i].ChangeinPercent,
+                            open: tickers[i].Open,
+                            todayHigh: tickers[i].DaysHigh,
+                            todayLow: tickers[i].DaysLow,
+                            wkHigh: tickers[i].YearHigh,
+                            wkLow: tickers[i].YearLow,
+                            volume: tickers[i].Volume,
+                            avgVolume: tickers[i].AverageDailyVolume,
+                            marketCap: tickers[i].MarketCapitalization,
+                            peRatio: tickers[i].PERatio,
+                            divYield: tickers[i].DividendYield,
+                            change: tickers[i].change
+                        }); %>
+                    <% } %>
+                </div>
+            <% } else { %>
+                <div class="noSavedTickers text-center">
+                    <h4>You Have no Saved Tickers</h4>
+                </div>
+            <% } %>
         </div>
         <% include ../partials/scripts %>
 </body>

@@ -51,11 +51,15 @@ app.get("/profile", function(request, response) {
     // If the user is logged in, render the profile page, otherwise redirect to '/'
     if (response.locals.user) {
         var user = response.locals.user;
-
-        response.render('pages/profile', {
-            pageTitle: 'Profile',
-            username: user.username
+        
+        tickerData.getMultTickerInfo(user.savedTickers).then(function(tickers) {
+            response.render('pages/profile', {
+                pageTitle: 'Profile',
+                username: user.username,
+                tickers: tickers
+            });
         });
+
     } else {
         response.redirect('/');
     }
@@ -233,6 +237,21 @@ app.post("/search", function(request, response) {
     }, function(errorMessage) {
         response.json({result: errorMessage, notFound: true});
     });
+
+});
+
+// Route for saving a ticker
+app.post("/saveTicker", function(request, response) {
+
+    if (response.locals.user) {
+        userData.saveTicker(response.locals.user._id, request.body.symbol).then(function(result) {
+            response.json({result: "Successfully added ticker."});
+        }, function(errorMessage) {
+            response.status(500).json({error: errorMessage});
+        });
+    } else {
+        response.status(500).json({error: "User not signed in."});
+    }
 
 });
 

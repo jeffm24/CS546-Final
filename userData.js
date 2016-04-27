@@ -45,7 +45,8 @@ MongoClient.connect(fullMongoUrl)
                                 lastName: "",
                                 hobby: "",
                                 petName: ""
-                            }
+                            },
+                            savedTickers: []
                         });
                     });
                 }
@@ -131,10 +132,17 @@ MongoClient.connect(fullMongoUrl)
             });
         };
 
-        // Saves the ticker with the given
-        /*
-        exports.saveTicker = function () {
+        // Saves the ticker with the given symbol
+        exports.saveTicker = function (userId, symbol) {
 
+            // Error checking
+            if (!userId || !symbol) {
+                return Promise.reject("Invalid argument(s).");
+            }
+
+            // Clear the sessionID for the logged out user
+            return usersCollection.update({"_id": userId}, {$addToSet: {"savedTickers": symbol}}).then(function() {
+                return Promise.resolve(true);
+            });
         };
-        */
     });

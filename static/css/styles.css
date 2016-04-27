@@ -204,15 +204,6 @@ body {
     color: lightgrey;
 }
 
-/*
-.tickerItem.positive > a:hover {
-    color: #17ac7e;
-}
-.tickerItem.negative > a:hover {
-    color: #ED4337;
-}
-*/
-
 .sub-panel {
     background-color: #303032;
     border-radius: 3px;

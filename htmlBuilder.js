@@ -25,7 +25,7 @@ function buildSearchTickerItem (info) {
     var tickerDataHtml = '<div class="panel panel-default tickerItem ' + highlightClass + '">' +
         '<div class="panel-heading">' +
             '<h3 class="panel-title">' + info.symbol + ' <span class="change-percent ' + highlightClass + '">(' + info.ChangeinPercent + ')</span>' +
-                '<button type="button" id="saveTickerBtn" class="btn btn-primary pull-right"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button><div class="clearfix"></div>' +
+                '<button type="button" id="saveTickerBtn" class="btn btn-primary pull-right" data-symbol="' + info.symbol + '"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button><div class="clearfix"></div>' +
             '</h3>' +
         '</div>' +
         '<div class="panel-body">' +
