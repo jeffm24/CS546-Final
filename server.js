@@ -5,6 +5,7 @@ var cookieParser = require('cookie-parser');
 var httpRequest = require('request');
 var userData = require('./userData.js');
 var tickerData = require('./tickerData.js');
+var htmlBuilder = require('./htmlBuilder.js');
 
 // We create our express isntance:
 var app = express();
@@ -196,8 +197,8 @@ app.post("/search", function(request, response) {
             tickerData.getTickerInfo(request.body.search).then(function(tickerInfo) {
                 console.log("Got info from database for " + request.body.search + ".");
 
-                // Success respond with tickerInfo
-                response.json({result: tickerInfo});
+                // Success respond with html for a tickerItem with the returned tickerInfo
+                response.json({result: htmlBuilder.buildSearchTickerItem(tickerInfo)});
             });
         } else {
             console.log("Ticker info for " + request.body.search + " not up to date.");
@@ -217,8 +218,8 @@ app.post("/search", function(request, response) {
                         tickerData.refreshTicker(request.body.search, lastQueried, info).then(function(tickerInfo) {
                             console.log("Updated info in database for " + request.body.search + ".");
 
-                            // Success respond with tickerInfo
-                            response.json({result: tickerInfo});
+                            // Success respond with html for a tickerItem with the returned tickerInfo
+                            response.json({result: htmlBuilder.buildSearchTickerItem(tickerInfo)});
                         });
                     } else {
                         response.json({result: "Query returned no results.", notFound: true});

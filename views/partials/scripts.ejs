@@ -90,21 +90,7 @@
                             confirmButtonText: "OK"
                         });
                     } else {
-                        var quote = data.result;
-                        console.log(data.result);
-
-                        $('#searchResult').html('<div class="panel panel-default tickerItem">' +
-                            '<a data-toggle="collapse" data-parent="#accordion" href="#collapseSearch">' +
-                                '<div class="panel-heading">' +
-                                    '<h4 class="panel-title">' + quote.Symbol + '</h4>' +
-                                '</div>' +
-                            '</a>' +
-                            '<div id="collapseSearch" class="panel-collapse collapse in">' +
-                                '<div class="panel-body">' +
-                                    '<img src="/assets/images/tempStockSection.png" style="max-width: 100% ; width: 100%"/>' +
-                                '</div>' +
-                            '</div>' +
-                        '</div>');
+                        $('#searchResult').html(data.result);
                     }
                 },
                 error: function(xhr, status, error) {

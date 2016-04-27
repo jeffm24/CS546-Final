@@ -1,7 +1,7 @@
 <div class="panel panel-default tickerItem">
     <a data-toggle="collapse" data-parent="#accordion" href="#collapse<%= tickerSymbol %>">
         <div class="panel-heading">
-            <h4 class="panel-title"><%= tickerSymbol %></h4>
+            <h3 class="panel-title"><%= tickerSymbol %>: $<%= askPrice %> <span id="change-<%= tickerSymbol %>">(<%= changeinPercent %>)</span></h3>
         </div>
     </a>
     <div id="collapse<%= tickerSymbol %>" class="panel-collapse collapse out">
