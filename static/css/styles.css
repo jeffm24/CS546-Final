@@ -217,6 +217,6 @@ body {
     color: grey;
 }
 
-.graph-panel > * {
+.graph-panel > .d3-wrapper > * {
     max-width: 100%;
 }
