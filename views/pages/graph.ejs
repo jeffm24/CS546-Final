@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+
+<head>
+    <% include ../partials/head %>
+</head>
+
+
+<body>
+
+<div id = "grid">
+
+
+
+</div>
+
+<!-- set inputs for the query -->    
+<div id="dates">
+    
+	<form id="dates" class = "hidden">   
+		<input type="text" id="ticker" name = "start" value= "<%= ticker %>" >
+		<input type="text" id="start" name = "start" value="2013-08-10" >
+		<input type="text" id="end" name = "end" value="2014-08-10" >
+    </form>
+    <button class="btn btn-primary" id="week" type="button">1W</button>
+	<button class="btn btn-primary" id="month" type="button">1M</button>
+	<button class="btn btn-primary" id="3month" type="button">3M</button>
+	<button class="btn btn-primary" id="year" type="button">1Y</button>
+	
+</div>
+
+</body>
+
+<% include ../partials/scripts %>
+
+<script>
+
+// Set the dimensions of the graph
+
+var margin = {top: 30, right: 40, bottom: 30, left: 50},
+    width = 600 - margin.left - margin.right,
+    height = 270 - margin.top - margin.bottom;
+
+// Parse the date / time
+var parseDate = d3.time.format("%Y-%m-%d").parse;
+
+// Set the ranges
+var x = d3.time.scale().range([0, width]);
+var y = d3.scale.linear().range([height, 0]);
+
+var xAxis = d3.svg.axis().scale(x)
+    .orient("bottom").ticks(5);
+
+var    yAxis = d3.svg.axis().scale(y)
+    .orient("left").ticks(5);
+
+var valueline = d3.svg.line()
+    .x(function(d) { return x(d.date); })
+    .y(function(d) { return y(d.high); });
+    
+  
+var svg = d3.select("#grid")
+    .append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+      .append("g")
+        .attr("transform", "translate(" 
+            + margin.left 
+            + "," + margin.top + ")");
+
+var stock = document.getElementById('ticker').value;
+var start = document.getElementById('start').value;
+var end = document.getElementById('end').value;
+
+var inputURL = "http://query.yahooapis.com/v1/public/yql"+
+    "?q=select%20*%20from%20yahoo.finance.historicaldata%20"+
+    "where%20symbol%20%3D%20%22"
+    +stock+"%22%20and%20startDate%20%3D%20%22"
+    +start+"%22%20and%20endDate%20%3D%20%22"
+    +end+"%22&format=json&env=store%3A%2F%2F"
+    +"datatables.org%2Falltableswithkeys";
+
+    // Get the data 
+    d3.json(inputURL, function(error, data){
+
+    data.query.results.quote.forEach(function(d) {
+        d.date = parseDate(d.Date);
+        d.high = +d.High;
+        d.low = +d.Low;
+    });
+	
+    // Scale the range of the data
+    x.domain(d3.extent(data.query.results.quote, function(d) {
+        return d.date; }));
+    y.domain([
+        d3.min(data.query.results.quote, function(d) { return d.low; }), 
+        d3.max(data.query.results.quote, function(d) { return d.high; })
+    ]);
+	var d = d3.max(data.query.results.quote, function(d) { return d.high; });
+	console.log(d);
+    svg.append("path")        // Add the valueline path.
+        .attr("class", "line")
+        .attr("d", valueline(data.query.results.quote));
+
+    //svg.append("g")            // Add the X Axis
+      //  .attr("class", "x axis")
+        //.attr("transform", "translate(0," + height + ")")
+        //.call(xAxis);
+
+    //svg.append("g")            // Add the Y Axis
+      //  .attr("class", "y axis")
+        //.call(yAxis);
+
+        
+    svg.append("text")          // Add the title
+        .attr("class", "stock")
+        .attr("x", (width / 2))
+        .attr("y", margin.top / 5)
+        .attr("text-anchor", "middle")
+        .style("font-size", "20px")
+		.style("fill", "white")
+        .text(parseFloat(data.query.results.quote[0].Close).toLocaleString('en-US', { style: 'currency', currency: 'USD' }));
+	
+	
+
+});
+
+
+
+</script>
+
+
+
+
+</html>

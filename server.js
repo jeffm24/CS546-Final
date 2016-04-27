@@ -80,6 +80,14 @@ app.get("/account", function(request, response){
   }
 });
 
+app.get("/graph", function(request, response) {
+	var ticker = request.query.ticker;
+	response.render('pages/graph', {
+          ticker: ticker,
+		  pageTitle: ticker
+      });
+});
+
 
 // Updates user info using the given request body
 app.post("/profile/editUserInfo", function(request, response) {
@@ -182,6 +190,8 @@ app.post("/getTickerSearchSuggestions", function(request, response) {
     });
 
 });
+
+
 
 // Search route
 app.post("/search", function(request, response) {
