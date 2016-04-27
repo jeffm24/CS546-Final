@@ -130,4 +130,11 @@ MongoClient.connect(fullMongoUrl)
                 return Promise.resolve(true);
             });
         };
+
+        // Saves the ticker with the given
+        /*
+        exports.saveTicker = function () {
+
+        };
+        */
     });
