@@ -130,8 +130,15 @@ MongoClient.connect(fullMongoUrl)
         // Returns the info fields of the tickers with the given symbols
         exports.getMultTickerInfo = function(symbols) {
 
+            if (symbols === null) {
+                return Promise.reject("Invalid Arguments.");
+            } else if (symbols.length === 0) {
+                return Promise.resolve([]);
+            }
+
             // Try to find ticker in the database
             return tickerCollection.find({symbol: {$in: symbols}}).toArray().then(function(listOfTickers) {
+
                 // Check if tickers were found
                 if (listOfTickers.length) {
                     var infoList = [];
@@ -145,6 +152,8 @@ MongoClient.connect(fullMongoUrl)
 
                         infoList.push(ticker.info);
                     }
+
+                    console.log(infoList);
 
                     return infoList;
                 } else {

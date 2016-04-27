@@ -51,7 +51,15 @@ app.get("/profile", function(request, response) {
     // If the user is logged in, render the profile page, otherwise redirect to '/'
     if (response.locals.user) {
         var user = response.locals.user;
-        
+
+        /*
+        response.render('pages/profile', {
+            pageTitle: 'Profile',
+            username: user.username,
+            tickers: []
+        });
+        */
+
         tickerData.getMultTickerInfo(user.savedTickers).then(function(tickers) {
             response.render('pages/profile', {
                 pageTitle: 'Profile',
@@ -117,7 +125,6 @@ app.post("/signin", function(request, response) {
                 expiresAt.setHours(expiresAt.getHours() + 5);
 
                 response.cookie("sessionID", sessionID, { expires: expiresAt });
-                //console.log("Created new sessionID cookie: {sessionID: " + sessionID + "}");
 
                 response.json({status: "success"});
             }
@@ -126,7 +133,7 @@ app.post("/signin", function(request, response) {
         });
 
     } else {
-        reponse.status(500).json({error: "User already signed in."})
+        response.status(500).json({error: "User already signed in."});
     }
 
 });
@@ -172,7 +179,7 @@ app.post("/register", function(request, response) {
         });
 
     } else {
-        reponse.status(500).json({error: "User already signed in."})
+        response.status(500).json({error: "User already signed in."})
     }
 
 });

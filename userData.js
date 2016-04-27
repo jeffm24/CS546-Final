@@ -104,7 +104,7 @@ MongoClient.connect(fullMongoUrl)
 
         // Gets a user with the given sessionID, returns null if the user does not exist
         exports.getUserBySessionID = function (sessionID) {
-
+            
             // Error checking
             if (sessionID) {
                 return usersCollection.findOne({ "currentSessionId": sessionID });
