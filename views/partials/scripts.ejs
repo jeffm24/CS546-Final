@@ -1,8 +1,7 @@
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="http://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
-	<script src="//d3js.org/d3.v3.min.js"></script>
-	
+
     <!-- jQuery fallback -->
     <script>
         if (!window.jQuery) { document.write('<script src="/assets/js/jquery.js"><\/script>'); }
@@ -13,6 +12,9 @@
 
     <!-- Sweetalert scripts -->
     <script src="/assets/js/sweetalert.min.js"></script>
+
+    <!-- d3 scripts -->
+    <script src="//d3js.org/d3.v3.min.js"></script>
 
     <!-- Scripts we made -->
     <script>
@@ -150,7 +152,7 @@
                 }
             });
         });
-		
+
 		$('.week').on('click', function(e) {
 			console.log($(e.target).data("symbol"));
 			var stock = $(e.target).data("symbol");
@@ -160,9 +162,9 @@
 			start = start.toISOString().split('T')[0];
 			end = end.toISOString().split('T')[0];
 			updateGraph(stock,start,end);
-		
+
 		});
-		
+
 		$('.month').on('click', function(e) {
 			console.log($(e.target).data("symbol"));
 			var stock = $(e.target).data("symbol");
@@ -172,9 +174,9 @@
 			start = start.toISOString().split('T')[0];
 			end = end.toISOString().split('T')[0];
 			updateGraph(stock,start,end);
-		
+
 		});
-		
+
 		$('.3month').on('click', function(e) {
 			console.log($(e.target).data("symbol"));
 			var stock = $(e.target).data("symbol");
@@ -184,9 +186,9 @@
 			start = start.toISOString().split('T')[0];
 			end = end.toISOString().split('T')[0];
 			updateGraph(stock,start,end);
-		
+
 		});
-		
+
 		$('.year').on('click', function(e) {
 			console.log($(e.target).data("symbol"));
 			var stock = $(e.target).data("symbol");
@@ -197,85 +199,112 @@
 			end = end.toISOString().split('T')[0];
 			updateGraph(stock,start,end);
 		});
-		
-	
-		function updateGraph(t,s,e) {
 
-		
-			var stock = t;
+        var graphsInfo = {};
+
+        function makeGraph(tickerSymbol) {
+
+			var margin = {top: 30, right: 40, bottom: 30, left: 50},
+				width = 400 - margin.left - margin.right,
+				height = 310 - margin.top - margin.bottom;
+
+			// Parse the date / time
+			var parseDate = d3.time.format("%Y-%m-%d").parse;
+
+			// Set the ranges
+			var x = d3.time.scale().range([0, width]);
+			var y = d3.scale.linear().range([height, 0]);
+
+			var xAxis = d3.svg.axis().scale(x)
+				.orient("bottom").ticks(5);
+
+			var yAxis = d3.svg.axis().scale(y)
+				.orient("left").ticks(5);
+
+			var valueLine = d3.svg.line()
+				.x(function(d) { return x(d.date); })
+				.y(function(d) { return y(d.high); });
+
+			var svg = d3.select("#d3-" + tickerSymbol)
+                .append("svg")
+				.attr("width", width + margin.left + margin.right)
+				.attr("height", height + margin.top + margin.bottom)
+                .append("g")
+				.attr("transform", "translate("+ margin.left + "," + margin.top + ")");
+
+            graphsInfo[tickerSymbol] = {
+                margin: margin,
+                width: width,
+                height: height,
+                parseDate: parseDate,
+                x: x,
+                y: y,
+                xAxis: xAxis,
+                yAxis: yAxis,
+                valueLine: valueLine,
+                svg: svg
+            };
+
+            $("#d3-" + tickerSymbol + " .week").click();
+        }
+
+		function updateGraph(t, s, e) {
+			var tickerSymbol = t;
 			var start = s;
 			var end = e;
-			console.log("#d3" + stock);
-				
-					
+			console.log("#d3" + tickerSymbol);
+
 			var inputURL = "http://query.yahooapis.com/v1/public/yql"+
 				"?q=select%20*%20from%20yahoo.finance.historicaldata%20"+
 				"where%20symbol%20%3D%20%22"
-				+stock+"%22%20and%20startDate%20%3D%20%22"
+				+tickerSymbol+"%22%20and%20startDate%20%3D%20%22"
 				+start+"%22%20and%20endDate%20%3D%20%22"
 				+end+"%22&format=json&env=store%3A%2F%2F"
 				+"datatables.org%2Falltableswithkeys";
 
-				// Get the data again
-				d3.json(inputURL, function(error, data){
+			// Get the data again
+			d3.json(inputURL, function(error, data){
 
-					data.query.results.quote.forEach(function(d) {
-						d.date = parseDate(d.Date);
-						d.high = +d.High;
-						d.low = +d.Low;
-					});
-
-					// Scale the range of the data
-					x.domain(d3.extent(data.query.results.quote, function(d) {
-						return d.date; }));
-					y.domain([
-						d3.min(data.query.results.quote, function(d) { 
-							return d.low; }), 
-						d3.max(data.query.results.quote, function(d) { 
-							return d.high; })
-					]);
-
-					// Select the section we want to apply our changes to
-					// NEED TO FIX
-					var svg = d3.select("#d3-" + t).transition();
-
-					// Make the changes
-					svg.select(".line")    // change the line
-						.transition()
-						.duration(1000) 
-						.attr("d", valueline(data.query.results.quote));
-
-					
-			 
-					svg.select(".shadow") // change the title shadow
-						.duration(1000)
-						.text(stock);
-
-					$('#title-' + stock).text(parseFloat(data.query.results.quote[0].Close).toLocaleString('en-US', { style: 'currency', currency: 'USD' }));
-    
-						 
-					//svg.select(".stock")   // change the title
-					//	.duration(2000)
-					//	.transition()
-					//	.text(parseFloat(data.query.results.quote[0].Close).toLocaleString('en-US', { style: 'currency', currency: 'USD' }));
-				 
-					//svg.select(".x.axis") // change the x axis
-					//	.duration(1000)
-					//	.call(xAxis);
-					//svg.select(".y.axis") // change the y axis
-					//	.duration(1000)
-					//	.call(yAxis);
-
+				data.query.results.quote.forEach(function(d) {
+					d.date = graphsInfo[tickerSymbol].parseDate(d.Date);
+					d.high = +d.High;
+					d.low = +d.Low;
 				});
+
+				// Scale the range of the data
+				graphsInfo[tickerSymbol].x.domain(d3.extent(data.query.results.quote, function(d) {
+					return d.date; }));
+				graphsInfo[tickerSymbol].y.domain([
+					d3.min(data.query.results.quote, function(d) {
+						return d.low; }),
+					d3.max(data.query.results.quote, function(d) {
+						return d.high; })
+				]);
+
+				// Select the section we want to apply our changes to
+				var svg = d3.select("#d3-" + tickerSymbol).transition();
+
+				// Make the changes
+				svg.select("#d3-" + tickerSymbol + " .line")    // change the line
+					.transition()
+					.duration(1000)
+					.attr("d", graphsInfo[tickerSymbol].valueLine(data.query.results.quote));
+
+				svg.select("#d3-" + tickerSymbol + " .shadow") // change the title shadow
+					.duration(1000)
+					.text(tickerSymbol);
+
+				$('#title-' + tickerSymbol).text(parseFloat(data.query.results.quote[0].Close).toLocaleString('en-US', { style: 'currency', currency: 'USD' }));
+			});
 		};
-	
 
 		$(document).ready(function () {
 			$(".d3-wrapper").each(function() {
 				var symbol = $(this).data("symbol");
-				$("#d3-" + symbol + " .week").click();
+                makeGraph(symbol);
 			});
-		
+
+            console.log(graphsInfo);
 		});
-		
+
     </script>
