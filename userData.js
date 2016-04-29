@@ -104,7 +104,7 @@ MongoClient.connect(fullMongoUrl)
 
         // Gets a user with the given sessionID, returns null if the user does not exist
         exports.getUserBySessionID = function (sessionID) {
-            
+
             // Error checking
             if (sessionID) {
                 return usersCollection.findOne({ "currentSessionId": sessionID });
@@ -143,6 +143,24 @@ MongoClient.connect(fullMongoUrl)
             // Clear the sessionID for the logged out user
             return usersCollection.update({"_id": userId}, {$addToSet: {"savedTickers": symbol}}).then(function() {
                 return Promise.resolve(true);
+            }, function(errorMessage) {
+                return Promise.reject(errorMessage);
+            });
+        };
+
+        // Removes the ticker with the given symbol
+        exports.deleteTicker = function (userId, symbol) {
+
+            // Error checking
+            if (!userId || !symbol) {
+                return Promise.reject("Invalid argument(s).");
+            }
+
+            // Clear the sessionID for the logged out user
+            return usersCollection.update({"_id": userId}, {$pull: {"savedTickers": symbol}}).then(function() {
+                return Promise.resolve(true);
+            }, function(errorMessage) {
+                return Promise.reject(errorMessage);
             });
         };
     });

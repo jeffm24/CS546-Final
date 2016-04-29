@@ -100,6 +100,13 @@ MongoClient.connect(fullMongoUrl)
 
         // Updates the ticker with the given symbol with the given lastQueried date and query info
         exports.refreshTicker = function(symbol, lastQueried, info) {
+            // replace all null fields with "--"
+            for (field in info) {
+                if (!info[field]) {
+                    info[field] = "--";
+                }
+            }
+
             return tickerCollection.update({symbol: symbol}, {$set: {lastQueried: lastQueried, info: info}}).then(function(res) {
                 return info;
             }, function(err) {
@@ -153,7 +160,7 @@ MongoClient.connect(fullMongoUrl)
                         infoList.push(ticker.info);
                     }
 
-                    console.log(infoList);
+                    //console.log(infoList);
 
                     return infoList;
                 } else {

@@ -202,17 +202,19 @@ app.post("/search", function(request, response) {
     tickerData.isTickerUpToDate(request.body.search).then(function(upToDate) {
 
         if (upToDate) {
-            console.log("Ticker info for " + request.body.search + " up to date.");
+            //console.log("Ticker info for " + request.body.search + " up to date.");
 
             // If the ticker is up to date, then just get the ticker info from the database and respond with it
             tickerData.getTickerInfo(request.body.search).then(function(tickerInfo) {
-                console.log("Got info from database for " + request.body.search + ".");
+                //console.log("Got info from database for " + request.body.search + ".");
+
+                var userSavedTickers = response.locals.user.savedTickers;
 
                 // Success respond with html for a tickerItem with the returned tickerInfo
-                response.json({result: htmlBuilder.buildSearchTickerItem(tickerInfo)});
+                response.json({result: htmlBuilder.buildSearchTickerItem(tickerInfo, userSavedTickers)});
             });
         } else {
-            console.log("Ticker info for " + request.body.search + " not up to date.");
+            //console.log("Ticker info for " + request.body.search + " not up to date.");
 
             // If the ticker is not up to date, then query yahoo finance and update it before responding
             httpRequest('https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20yahoo.finance.quotes%20where%20symbol%20in%20(%22' + request.body.search + '%22)%0A%09%09&format=json&env=http%3A%2F%2Fdatatables.org%2Falltables.env&callback=', function (error, data, body) {
@@ -224,13 +226,15 @@ app.post("/search", function(request, response) {
 
                     // Check to see if actual data was recieved
                     if (info.Ask) {
-                        console.log("Updating info in database for " + request.body.search + ".");
+                        //console.log("Updating info in database for " + request.body.search + ".");
 
                         tickerData.refreshTicker(request.body.search, lastQueried, info).then(function(tickerInfo) {
-                            console.log("Updated info in database for " + request.body.search + ".");
+                            //console.log("Updated info in database for " + request.body.search + ".");
+
+                            var userSavedTickers = response.locals.user.savedTickers;
 
                             // Success respond with html for a tickerItem with the returned tickerInfo
-                            response.json({result: htmlBuilder.buildSearchTickerItem(tickerInfo)});
+                            response.json({result: htmlBuilder.buildSearchTickerItem(tickerInfo, userSavedTickers)});
                         });
                     } else {
                         response.json({result: "Query returned no results.", notFound: true});
@@ -253,6 +257,21 @@ app.post("/saveTicker", function(request, response) {
     if (response.locals.user) {
         userData.saveTicker(response.locals.user._id, request.body.symbol).then(function(result) {
             response.json({result: "Successfully added ticker."});
+        }, function(errorMessage) {
+            response.status(500).json({error: errorMessage});
+        });
+    } else {
+        response.status(500).json({error: "User not signed in."});
+    }
+
+});
+
+// Route for removing a ticker
+app.delete("/removeTicker", function(request, response) {
+
+    if (response.locals.user) {
+        userData.deleteTicker(response.locals.user._id, request.body.symbol).then(function(result) {
+            response.json({result: "Successfully removed ticker."});
         }, function(errorMessage) {
             response.status(500).json({error: errorMessage});
         });

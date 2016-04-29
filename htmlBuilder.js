@@ -2,16 +2,9 @@ var exports = module.exports = {
     buildSearchTickerItem
 };
 
-function buildSearchTickerItem (info) {
+function buildSearchTickerItem (info, userSavedTickers) {
     if (!info || typeof info !== 'object') {
         Promise.reject("Argument not correct type.");
-    }
-
-    // replace all null fields with "--"
-    for (field in info) {
-        if (!info[field]) {
-            info[field] = "--";
-        }
     }
 
     var highlightClass;
@@ -24,9 +17,14 @@ function buildSearchTickerItem (info) {
 
     var tickerDataHtml = '<div class="panel panel-default tickerItem ' + highlightClass + '">' +
         '<div class="panel-heading">' +
-            '<h3 class="panel-title">' + info.symbol + ' <span class="change-percent ' + highlightClass + '">(' + info.ChangeinPercent + ')</span>' +
-                '<button type="button" id="saveTickerBtn" class="btn btn-primary pull-right" data-symbol="' + info.symbol + '"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button><div class="clearfix"></div>' +
-            '</h3>' +
+            '<h3 class="panel-title">' + info.symbol + ' <span class="change-percent ' + highlightClass + '">(' + info.ChangeinPercent + ')</span>';
+
+    // Only show the "save ticker" button if the ticker is not already saved
+    if (userSavedTickers.indexOf(info.symbol) === -1) {
+        tickerDataHtml += '<button type="button" id="saveTickerBtn" class="btn btn-primary pull-right" data-symbol="' + info.symbol + '"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button><div class="clearfix"></div>';
+    }
+
+    tickerDataHtml += '</h3>' +
         '</div>' +
         '<div class="panel-body">' +
             '<div class="row">' +

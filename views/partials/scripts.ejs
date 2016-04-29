@@ -127,4 +127,26 @@
                 }
             });
         });
+
+        // Remove Ticker Button click handler
+        $(document).on('click', '#removeTickerBtn', function(event){
+            $.ajax({
+                url: '/removeTicker',
+                type: 'DELETE',
+                data: {
+                    symbol: $(event.target).data('symbol')
+                },
+                success: function(data) {
+                    location.reload();
+                },
+                error: function(xhr, status, error) {
+                    swal({
+                        title: "Error!",
+                        text: xhr.responseJSON.error,
+                        type: "error",
+                        confirmButtonText: "OK"
+                    });
+                }
+            });
+        });
     </script>
