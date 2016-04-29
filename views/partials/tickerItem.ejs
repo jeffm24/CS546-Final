@@ -8,9 +8,10 @@
         <div class="panel-body">
             <div class="row">
                 <div class="col-xs-12 col-sm-6">
-                    <div class="sub-panel graph-panel">
-                        <div class="d3-wrapper" id="d3-<%= tickerSymbol %>">
-                            <img src="/assets/images/graph.png" />
+                    <div id = "graph-<%= tickerSymbol %>" class="sub-panel graph-panel">
+                        
+						<div class="d3-wrapper" id="d3-<%= tickerSymbol %>" data-symbol = "<%= tickerSymbol %>">
+                            <% include ../pages/graph %>
                         </div>
                     </div>
                 </div>

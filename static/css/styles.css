@@ -250,3 +250,27 @@ body {
 .graph-panel > .d3-wrapper > * {
     max-width: 100%;
 }
+
+path { 
+    stroke: #17ac7e;
+    stroke-width: 2;
+    fill: none;
+}
+
+.axis path,
+.axis line {
+    fill: none;
+    stroke: black;
+    stroke-width: 1;
+    shape-rendering: crispEdges;
+}
+
+.stock {
+	color: white
+}
+
+#grid {
+	border: 1px solid #ddd;
+	
+}
+
