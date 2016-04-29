@@ -10,6 +10,13 @@ body {
     text-shadow: 0px 1px 1px rgba(0,0,0,0.5);
 }
 
+::-moz-selection {
+    color: orange;
+}
+::selection {
+    color: orange;
+}
+
 /* overriding bootstrap styling */
 .btn-primary, .btn-primary:focus:active {
     background-color: #17ac7e;

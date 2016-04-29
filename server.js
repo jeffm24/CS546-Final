@@ -225,7 +225,7 @@ app.post("/search", function(request, response) {
                     var info = query.results.quote;
 
                     // Check to see if actual data was recieved
-                    if (info.Ask) {
+                    if (info.Open) {
                         //console.log("Updating info in database for " + request.body.search + ".");
 
                         tickerData.refreshTicker(request.body.search, lastQueried, info).then(function(tickerInfo) {
