@@ -247,11 +247,9 @@ body {
     color: grey;
 }
 
-.graph-panel > .d3-wrapper > * {
-    max-width: 100%;
-}
 
-path { 
+
+path {
     stroke: #17ac7e;
     stroke-width: 2;
     fill: none;
@@ -269,8 +267,17 @@ path {
 	color: white
 }
 
-#grid {
-	border: 1px solid #ddd;
-	
+.d3-wrapper {
+    display: inline-block;
+    position: relative;
+    width: 100%;
+    padding-bottom: 67%; /* aspect ratio */
+    vertical-align: top;
+    overflow: hidden;
 }
-
+.svg-content-responsive {
+    display: inline-block;
+    position: absolute;
+    top: 10px;
+    left: 0;
+}
