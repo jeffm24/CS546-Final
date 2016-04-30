@@ -247,12 +247,15 @@ body {
     color: grey;
 }
 
-
-
 path {
-    stroke: #17ac7e;
     stroke-width: 2;
     fill: none;
+}
+.tickerItem.positive path {
+    stroke: #17ac7e;
+}
+.tickerItem.negative path {
+    stroke: #ED4337;
 }
 
 .axis path,
