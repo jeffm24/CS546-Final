@@ -275,9 +275,12 @@
             });
         };
 
-        $('.panel-collapse.out').click(function(e) {
-            $(e.target).find('.week').click();
+        /*
+        $('.panel').on('show.bs.collapse', function (e) {
+            console.log('#' + e.target.id + ' .week');
+            //$('#' + e.target.id + ' .week').click();
         });
+        */
 
         $(document).ready(function () {
             $(".d3-wrapper").each(function() {
