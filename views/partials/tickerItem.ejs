@@ -8,6 +8,7 @@
         <div class="panel-body">
             <div class="row">
                 <div class="col-xs-12 col-sm-6">
+<<<<<<< HEAD
 
 
                   <div class = "hidden" id = "title-<%= tickerSymbol %>">
@@ -25,6 +26,24 @@
 
                       </div>
 
+=======
+                    <div id = "graph-<%= tickerSymbol %>" class="sub-panel graph-panel">
+
+						<div class="d3-wrapper" id="d3-<%= tickerSymbol %>" data-symbol = "<%= tickerSymbol %>">
+                            <!-- set inputs for the query -->
+                            <div class="dates">
+
+                                <button class="btn btn-primary week" type="button" data-symbol = "<%= tickerSymbol %>" >1W</button>
+                            	<button class="btn btn-primary month" type="button" data-symbol = "<%= tickerSymbol %>">1M</button>
+                            	<button class="btn btn-primary 3month" type="button" data-symbol = "<%= tickerSymbol %>">3M</button>
+                            	<button class="btn btn-primary year" type="button" data-symbol = "<%= tickerSymbol %>">1Y</button>
+
+                            </div>
+
+                            <div id = "title-<%= tickerSymbol %>"></div>
+                        </div>
+                    </div>
+>>>>>>> 6415e46456d4522632184e0b47148f49be1761b4
                 </div>
                 <div class="col-xs-12 col-sm-6">
                     <div class="sub-panel stat-panel">
