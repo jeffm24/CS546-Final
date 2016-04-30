@@ -215,6 +215,8 @@
 
             svg.append("path")        // Add the valueline path.
                 .attr("class", "line");
+
+            $('#buttons-' + s + ' .week').click();
         }
 
         function updateGraph(t,s,e) {
@@ -222,9 +224,9 @@
             var stock = t;
             var start = s;
             var end = e;
-            var margin = {top: 30, right: 40, bottom: 30, left: 50},
-                width = $(".stat-panel").innerWidth() - margin.left - margin.right,
-                height = $(".stat-panel").innerHeight() - margin.top - margin.bottom;
+            var margin = {top: 30, right: 40, bottom: 30, left: 40},
+                width = $("#stats-" + stock).innerWidth() - margin.left - margin.right,
+                height = $("#stats-" + stock).innerHeight() - margin.top - margin.bottom;
 
             var x = d3.time.scale().range([0, width]);
             var y = d3.scale.linear().range([height, 0]);
@@ -252,16 +254,6 @@
                     d.low = +d.Low;
                 });
 
-                // Scale the range of the data
-                //x.domain(d3.extent(data.query.results.quote, function(d) {
-                //	return d.date; }));
-                //y.domain([
-                //	d3.min(data.query.results.quote, function(d) {
-                //		return d.low; }),
-                //	d3.max(data.query.results.quote, function(d) {
-                //		return d.high; })
-                //]);
-
                 x.domain(d3.extent(data.query.results.quote, function(d) {
                     return d.date; }));
                 y.domain([
@@ -282,6 +274,10 @@
                 $('#title-' + stock).text(parseFloat(data.query.results.quote[0].Close).toLocaleString('en-US', { style: 'currency', currency: 'USD' }));
             });
         };
+
+        $('.panel-collapse.out').click(function(e) {
+            $(e.target).find('.week').click();
+        });
 
         $(document).ready(function () {
             $(".d3-wrapper").each(function() {

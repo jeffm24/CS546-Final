@@ -10,8 +10,8 @@
                 <div class="col-xs-12 col-sm-6">
                     <div class = "hidden" id = "title-<%= tickerSymbol %>"></div>
 					<div class="d3-wrapper sub-panel" id="d3-<%= tickerSymbol %>" data-symbol = "<%= tickerSymbol %>"></div>
-                    <div id="dates">
-                        
+                    <div id="buttons-<%= tickerSymbol %>">
+
                         <button class="btn btn-primary week" type="button" data-symbol = "<%= tickerSymbol %>" >1W</button>
                         <button class="btn btn-primary month" type="button" data-symbol = "<%= tickerSymbol %>">1M</button>
                         <button class="btn btn-primary 3month" type="button" data-symbol = "<%= tickerSymbol %>">3M</button>
@@ -20,7 +20,7 @@
                     </div>
                 </div>
                 <div class="col-xs-12 col-sm-6">
-                    <div class="sub-panel stat-panel">
+                    <div id="stats-<%= tickerSymbol %>" class="sub-panel stat-panel">
                         <h4>Statistics</h4>
                         <hr />
                         <div class="row">
