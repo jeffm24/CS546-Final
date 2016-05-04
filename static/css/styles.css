@@ -249,7 +249,7 @@ body {
 }
 
 path {
-    stroke-width: 2;
+    stroke-width: 3;
     fill: none;
 }
 .tickerItem.positive path {
@@ -268,7 +268,7 @@ path {
 }
 
 .stock {
-	color: white
+	color: white;
 }
 .price {
   font-size: 3em;
