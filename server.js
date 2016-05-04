@@ -5,7 +5,6 @@ var cookieParser = require('cookie-parser');
 var httpRequest = require('request');
 var userData = require('./userData.js');
 var tickerData = require('./tickerData.js');
-var htmlBuilder = require('./htmlBuilder.js');
 
 // We create our express isntance:
 var app = express();
@@ -51,14 +50,6 @@ app.get("/profile", function(request, response) {
     // If the user is logged in, render the profile page, otherwise redirect to '/'
     if (response.locals.user) {
         var user = response.locals.user;
-
-        /*
-        response.render('pages/profile', {
-            pageTitle: 'Profile',
-            username: user.username,
-            tickers: []
-        });
-        */
 
         tickerData.getMultTickerInfo(user.savedTickers).then(function(tickers) {
             response.render('pages/profile', {
@@ -202,16 +193,19 @@ app.post("/search", function(request, response) {
     tickerData.isTickerUpToDate(request.body.search).then(function(upToDate) {
 
         if (upToDate) {
-            //console.log("Ticker info for " + request.body.search + " up to date.");
-
             // If the ticker is up to date, then just get the ticker info from the database and respond with it
             tickerData.getTickerInfo(request.body.search).then(function(tickerInfo) {
-                //console.log("Got info from database for " + request.body.search + ".");
 
-                var userSavedTickers = response.locals.user.savedTickers;
+                tickerInfo.userSavedTickers = response.locals.user.savedTickers;
 
-                // Success respond with html for a tickerItem with the returned tickerInfo
-                response.json({result: htmlBuilder.buildSearchTickerItem(tickerInfo, userSavedTickers)});
+                if (tickerInfo.ChangeinPercent.charAt(0) === '+') {
+                    tickerInfo.change = "positive";
+                } else {
+                    tickerInfo.change = "negative";
+                }
+
+                // Success respond with the ticker info
+                response.json({result: tickerInfo});
             });
         } else {
             //console.log("Ticker info for " + request.body.search + " not up to date.");
@@ -226,15 +220,20 @@ app.post("/search", function(request, response) {
 
                     // Check to see if actual data was recieved
                     if (info.Open) {
-                        //console.log("Updating info in database for " + request.body.search + ".");
 
+                        // Update the ticker in the database with the results from the Yahoo query
                         tickerData.refreshTicker(request.body.search, lastQueried, info).then(function(tickerInfo) {
-                            //console.log("Updated info in database for " + request.body.search + ".");
 
-                            var userSavedTickers = response.locals.user.savedTickers;
+                            tickerInfo.userSavedTickers = response.locals.user.savedTickers;
 
-                            // Success respond with html for a tickerItem with the returned tickerInfo
-                            response.json({result: htmlBuilder.buildSearchTickerItem(tickerInfo, userSavedTickers)});
+                            if (info.ChangeinPercent.charAt(0) === '+') {
+                                tickerInfo.change = "positive";
+                            } else {
+                                tickerInfo.change = "negative";
+                            }
+
+                            // Success respond the ticker info
+                            response.json({result: tickerInfo});
                         });
                     } else {
                         response.json({result: "Query returned no results.", notFound: true});

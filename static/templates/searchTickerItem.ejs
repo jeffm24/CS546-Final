@@ -1,0 +1,76 @@
+<div class="panel panel-default tickerItem <%= change %>">
+    <div class="panel-heading">
+        <h3 class="panel-title"><%= tickerSymbol %> <span class="change-percent <%= change %>">(<%= changeInPercent %>)</span></h3>
+        <% if (userSavedTickers.indexOf(tickerSymbol) === -1) { %>
+            <button type="button" id="saveTickerBtn" class="btn btn-primary pull-right" data-symbol="<%= tickerSymbol %>"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button><div class="clearfix"></div>
+        <% } %>
+    </div>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-xs-12 col-sm-6">
+                <div class = "hidden" id = "title-<%= tickerSymbol %>"></div>
+				<div class="d3-wrapper sub-panel" id="d3-<%= tickerSymbol %>" data-symbol = "<%= tickerSymbol %>"></div>
+                <div id="buttons-<%= tickerSymbol %>">
+
+                    <button class="btn btn-primary week" type="button" data-symbol = "<%= tickerSymbol %>" >1W</button>
+                    <button class="btn btn-primary month" type="button" data-symbol = "<%= tickerSymbol %>">1M</button>
+                    <button class="btn btn-primary 3month" type="button" data-symbol = "<%= tickerSymbol %>">3M</button>
+                    <button class="btn btn-primary year" type="button" data-symbol = "<%= tickerSymbol %>">1Y</button>
+
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-6">
+                <div id="stats-<%= tickerSymbol %>" class="sub-panel stat-panel">
+                    <h4>Statistics</h4>
+                    <hr />
+                    <div class="row">
+                        <div class="col-xs-6">
+                            <div class="stat-item">
+                                <p class="stat-val">$<%= open %></p>
+                                <p class="stat-name">Open</p>
+                            </div>
+                            <div class="stat-item">
+                                <p class="stat-val">$<%= todayHigh %></p>
+                                <p class="stat-name">Today's High</p>
+                            </div>
+                            <div class="stat-item">
+                                <p class="stat-val">$<%= todayLow %></p>
+                                <p class="stat-name">Today's Low</p>
+                            </div>
+                            <div class="stat-item">
+                                <p class="stat-val">$<%= wkHigh %></p>
+                                <p class="stat-name">52 Wk High</p>
+                            </div>
+                            <div class="stat-item">
+                                <p class="stat-val">$<%= wkLow %></p>
+                                <p class="stat-name">52 Wk Low</p>
+                            </div>
+                        </div>
+                        <div class="col-xs-6">
+                            <div class="stat-item">
+                                <p class="stat-val"><%= volume %></p>
+                                <p class="stat-name">Volume</p>
+                            </div>
+                            <div class="stat-item">
+                                <p class="stat-val"><%= avgVolume %></p>
+                                <p class="stat-name">Average Volume</p>
+                            </div>
+                            <div class="stat-item">
+                                <p class="stat-val">$<%= marketCap %></p>
+                                <p class="stat-name">Market Cap</p>
+                            </div>
+                            <div class="stat-item">
+                                <p class="stat-val"><%= peRatio %></p>
+                                <p class="stat-name">P/E Ratio</p>
+                            </div>
+                            <div class="stat-item">
+                                <p class="stat-val"><%= divYield %></p>
+                                <p class="stat-name">Div/Yield</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

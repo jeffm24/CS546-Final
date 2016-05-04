@@ -14,7 +14,7 @@
     <script src="/assets/js/sweetalert.min.js"></script>
 
     <!-- Client-side EJS -->
-    <script type="text/javascript" src="ejs_production.js"></script>
+    <script src="/assets/js/ejs.min.js"></script>
 
     <!-- d3 scripts -->
     <script src="//d3js.org/d3.v3.min.js"></script>
@@ -96,7 +96,36 @@
                             confirmButtonText: "OK"
                         });
                     } else {
-                        $('#searchResult').html(data.result);
+
+                        // Create the render data object to be passed to the renderer
+                        var renderData = {
+                            tickerSymbol: data.result.symbol,
+                            changeInPercent: data.result.ChangeinPercent,
+                            open: data.result.Open,
+                            todayHigh: data.result.DaysHigh,
+                            todayLow: data.result.DaysLow,
+                            wkHigh: data.result.YearHigh,
+                            wkLow: data.result.YearLow,
+                            volume: data.result.Volume,
+                            avgVolume: data.result.AverageDailyVolume,
+                            marketCap: data.result.MarketCapitalization,
+                            peRatio: data.result.PERatio,
+                            divYield: data.result.DividendYield,
+                            change: data.result.change,
+                            userSavedTickers: data.result.userSavedTickers
+                        };
+
+                        // Get the contents of the searchTickerItem ejs file to pass to the renderer
+                        $.ajax({
+                            url: '/assets/templates/searchTickerItem.ejs',
+                            type: 'GET',
+                            success: function(searchTickerItemEJS) {
+
+                                // Render the searchTickerItem and insert it
+                                var html = ejs.render(searchTickerItemEJS, renderData);
+                                $('#searchResult').html(html);
+                            }
+                        });
                     }
                 },
                 error: function(xhr, status, error) {
