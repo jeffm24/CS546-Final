@@ -223,11 +223,12 @@ body {
     padding: 10px;
 }
 
-.stat-panel {
+.stat-panel, .graph-panel{
     padding-left: 30px;
     padding-right: 30px;
     height: 100%;
 }
+
 
 .stat-item {
     margin: 10px 0px;
@@ -269,7 +270,14 @@ path {
 .stock {
 	color: white
 }
-
+.price {
+  font-size: 3em;
+}
+.buttons {
+  width: 190px ;
+  margin-left: auto ;
+  margin-right: auto ;
+}
 .d3-wrapper {
     display: inline-block;
     position: relative;

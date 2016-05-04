@@ -202,7 +202,7 @@
 
         function makeGraph(s) {
 
-            var margin = {top: 30, right: 40, bottom: 30, left: 40};
+            var margin = {top: 0, right: 30, bottom: 50, left: 5};
             var svg = d3.select("#d3-" + s)
                 .append("svg")
                 .attr("preserveAspectRatio", "xMinYMin meet")
@@ -224,7 +224,7 @@
             var stock = t;
             var start = s;
             var end = e;
-            var margin = {top: 30, right: 40, bottom: 30, left: 40},
+            var margin = {top: 0, right: 30, bottom: 50, left: 5},
                 width = $("#stats-" + stock).innerWidth() - margin.left - margin.right,
                 height = $("#stats-" + stock).innerHeight() - margin.top - margin.bottom;
 
