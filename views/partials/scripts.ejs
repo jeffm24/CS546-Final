@@ -1,295 +1,326 @@
-    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <script src="http://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="http://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
 
-    <!-- jQuery fallback -->
-    <script>
-        if (!window.jQuery) { document.write('<script src="/assets/js/jquery.js"><\/script>'); }
-    </script>
+<!-- jQuery fallback -->
+<script>
+    if (!window.jQuery) { document.write('<script src="/assets/js/jquery.js"><\/script>'); }
+</script>
 
-    <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="/assets/js/bootstrap.min.js"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+<script src="/assets/js/bootstrap.min.js"></script>
 
-    <!-- Sweetalert scripts -->
-    <script src="/assets/js/sweetalert.min.js"></script>
+<!-- Sweetalert scripts -->
+<script src="/assets/js/sweetalert.min.js"></script>
 
+<!-- Client-side EJS -->
+<script src="/assets/js/ejs.min.js"></script>
 
+<!-- d3 scripts -->
+<script src="//d3js.org/d3.v3.min.js"></script>
 
-    <!-- d3 scripts -->
-    <script src="//d3js.org/d3.v3.min.js"></script>
+<!-- Scripts we made -->
+<script>
+    //For signout
+    $('#signOutBtn').on('click', function(e) {
 
-    <!-- Scripts we made -->
-    <script>
-        //For signout
-        $('#signOutBtn').on('click', function(e) {
-
-            $.ajax({
-                url: '/signout',
-                type: 'POST',
-                success: function(data) {
-                    location.reload();
-                },
-                error: function(xhr, status, error) {
-                    alert(xhr.responseText + ' (' + xhr.status + ')');
-                }
-            });
-
-        });
-
-        /*
-        $(".tickerItem > a").click(function(e) {
-            $('html, body').animate({
-                scrollTop: $(e.target).offset().top
-            }, 500);
-        });
-        */
-
-        //For search bar pixles from top
-        $('#searchBar').data("offset-top", $('#searchBar').offset().top);
-
-        //dynamic search suggestions
-        $('#searchBarInput').on('input propertychange paste', function() {
-
-            if ($('#searchBarInput').val()) {
-                $.ajax({
-                    url: '/getTickerSearchSuggestions',
-                    type: 'POST',
-                    data: {
-                        search: $('#searchBarInput').val()
-                    },
-                    success: function(data) {
-                        if (data) {
-                            var listOfSymbols = [];
-
-                            for (ticker of data.suggestions) {
-                                listOfSymbols.push(ticker.symbol);
-                            }
-
-                            $('#searchBarInput').autocomplete({
-                                source: listOfSymbols
-                            });
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        console.log(xhr.responseText + ' (' + xhr.status + ')');
-                    }
-                });
+        $.ajax({
+            url: '/signout',
+            type: 'POST',
+            success: function(data) {
+                location.reload();
+            },
+            error: function(xhr, status, error) {
+                alert(xhr.responseText + ' (' + xhr.status + ')');
             }
-
         });
 
-        //Search submit
-        $('#searchForm').submit(function(e) {
+    });
+
+    /*
+    $(".tickerItem > a").click(function(e) {
+        $('html, body').animate({
+            scrollTop: $(e.target).offset().top
+        }, 500);
+    });
+    */
+
+    //For search bar pixles from top
+    $('#searchBar').data("offset-top", $('#searchBar').offset().top);
+
+    //dynamic search suggestions
+    $('#searchBarInput').on('input propertychange paste', function() {
+
+        if ($('#searchBarInput').val()) {
             $.ajax({
-                url: '/search',
+                url: '/getTickerSearchSuggestions',
                 type: 'POST',
                 data: {
-                    search: $('#searchBarInput').val().toUpperCase()
+                    search: $('#searchBarInput').val()
                 },
                 success: function(data) {
-                    if (data.notFound) {
-                        swal({
-                            title: "Error!",
-                            text: data.result,
-                            type: "error",
-                            confirmButtonText: "OK"
+                    if (data) {
+                        var listOfSymbols = [];
+
+                        for (ticker of data.suggestions) {
+                            listOfSymbols.push(ticker.symbol);
+                        }
+
+                        $('#searchBarInput').autocomplete({
+                            source: listOfSymbols
                         });
-                    } else {
-                        $('#searchResult').html(data.result);
                     }
                 },
                 error: function(xhr, status, error) {
-                    swal({
-                        title: "Error!",
-                        text: xhr.responseJSON.error,
-                        type: "error",
-                        confirmButtonText: "OK"
-                    });
+                    console.log(xhr.responseText + ' (' + xhr.status + ')');
                 }
             });
-
-            return false;
-        });
-
-        // Save Ticker Button click handler
-        $(document).on('click', '#saveTickerBtn', function(event){
-            $.ajax({
-                url: '/saveTicker',
-                type: 'POST',
-                data: {
-                    symbol: $('#saveTickerBtn').data('symbol')
-                },
-                success: function(data) {
-                    location.reload();
-                },
-                error: function(xhr, status, error) {
-                    swal({
-                        title: "Error!",
-                        text: xhr.responseJSON.error,
-                        type: "error",
-                        confirmButtonText: "OK"
-                    });
-                }
-            });
-        });
-
-        // Remove Ticker Button click handler
-        $(document).on('click', '#removeTickerBtn', function(event){
-            $.ajax({
-                url: '/removeTicker',
-                type: 'DELETE',
-                data: {
-                    symbol: $(event.target).data('symbol')
-                },
-                success: function(data) {
-                    location.reload();
-                },
-                error: function(xhr, status, error) {
-                    swal({
-                        title: "Error!",
-                        text: xhr.responseJSON.error,
-                        type: "error",
-                        confirmButtonText: "OK"
-                    });
-                }
-            });
-        });
-
-		$('.week').on('click', function(e) {
-			console.log($(e.target).data("symbol"));
-			var stock = $(e.target).data("symbol");
-			var end = new Date();
-			var start = new Date();
-			start.setDate(end.getDate()-7);
-			start = start.toISOString().split('T')[0];
-			end = end.toISOString().split('T')[0];
-			updateGraph(stock,start,end);
-
-		});
-
-		$('.month').on('click', function(e) {
-			console.log($(e.target).data("symbol"));
-			var stock = $(e.target).data("symbol");
-			var end = new Date();
-			var start = new Date();
-			start.setMonth(end.getMonth()-1);
-			start = start.toISOString().split('T')[0];
-			end = end.toISOString().split('T')[0];
-			updateGraph(stock,start,end);
-
-		});
-
-		$('.3month').on('click', function(e) {
-			console.log($(e.target).data("symbol"));
-			var stock = $(e.target).data("symbol");
-			var end = new Date();
-			var start = new Date();
-			start.setMonth(end.getMonth()-3);
-			start = start.toISOString().split('T')[0];
-			end = end.toISOString().split('T')[0];
-			updateGraph(stock,start,end);
-
-		});
-
-		$('.year').on('click', function(e) {
-			console.log($(e.target).data("symbol"));
-			var stock = $(e.target).data("symbol");
-			var end = new Date();
-			var start = new Date();
-			start.setFullYear(end.getFullYear()-1);
-			start = start.toISOString().split('T')[0];
-			end = end.toISOString().split('T')[0];
-			updateGraph(stock,start,end);
-		});
-
-        function makeGraph(s) {
-
-            var margin = {top: 1, right: -30, bottom: 20, left: 0};
-            var svg = d3.select("#d3-" + s)
-                .append("svg")
-                .attr("preserveAspectRatio", "xMinYMin meet")
-                .attr("viewBox", "0 0 500 400")
-                .classed("svg-content-responsive", true)
-                .append("g")
-                .attr("transform", "translate("
-                + margin.left
-                + "," + margin.top + ")");
-
-            svg.append("path")        // Add the valueline path.
-                .attr("class", "line");
-
-            $('#buttons-' + s + ' .week').click();
         }
 
-        function updateGraph(t,s,e) {
+    });
 
-            var stock = t;
-            var start = s;
-            var end = e;
-            var margin = {top: 1, right: -30, bottom: 20, left: 0},
-                width = $("#stats-" + stock).width() - margin.left - margin.right,
-                height = $("#stats-" + stock).height() - margin.top - margin.bottom;
+    //Search submit
+          $('#searchForm').submit(function(e) {
+              $.ajax({
+                  url: '/search',
+                  type: 'POST',
+                  data: {
+                      search: $('#searchBarInput').val().toUpperCase()
+                  },
+                  success: function(data) {
+                      if (data.notFound) {
+                          swal({
+                              title: "Error!",
+                              text: data.result,
+                              type: "error",
+                              confirmButtonText: "OK"
+                          });
+                      } else {
 
-            var x = d3.time.scale().range([0, width]);
-            var y = d3.scale.linear().range([height, 0]);
+                          // Create the render data object to be passed to the renderer
+                          var renderData = {
+                              tickerSymbol: data.result.symbol,
+                              changeInPercent: data.result.ChangeinPercent,
+                              open: data.result.Open,
+                              todayHigh: data.result.DaysHigh,
+                              todayLow: data.result.DaysLow,
+                              wkHigh: data.result.YearHigh,
+                              wkLow: data.result.YearLow,
+                              volume: data.result.Volume,
+                              avgVolume: data.result.AverageDailyVolume,
+                              marketCap: data.result.MarketCapitalization,
+                              peRatio: data.result.PERatio,
+                              divYield: data.result.DividendYield,
+                              change: data.result.change,
+                              userSavedTickers: data.result.userSavedTickers
+                          };
 
-            console.log("#d3" + stock);
-            var parseDate = d3.time.format("%Y-%m-%d").parse;
-            var valueline = d3.svg.line()
-                .x(function(d) { return x(d.date); })
-                .y(function(d) { return y(d.high); });
+                          // Get the contents of the searchTickerItem ejs file to pass to the renderer
+                          $.ajax({
+                              url: '/assets/templates/searchTickerItem.ejs',
+                              type: 'GET',
+                              success: function(searchTickerItemEJS) {
 
-            var inputURL = "http://query.yahooapis.com/v1/public/yql"+
-                "?q=select%20*%20from%20yahoo.finance.historicaldata%20"+
-                "where%20symbol%20%3D%20%22"
-                +stock+"%22%20and%20startDate%20%3D%20%22"
-                +start+"%22%20and%20endDate%20%3D%20%22"
-                +end+"%22&format=json&env=store%3A%2F%2F"
-                +"datatables.org%2Falltableswithkeys";
+                                  // Render the searchTickerItem and insert it
+                                  var html = ejs.render(searchTickerItemEJS, renderData);
+                                  $('#searchResult').html(html);
+                              }
+                          });
+                      }
+                  },
+                  error: function(xhr, status, error) {
+                      swal({
+                          title: "Error!",
+                          text: xhr.responseJSON.error,
+                          type: "error",
+                          confirmButtonText: "OK"
+                      });
+                  }
+              });
 
-            // Get the data again
-            d3.json(inputURL, function(error, data) {
+              return false;
+          });
 
-                data.query.results.quote.forEach(function(d) {
-                    d.date = parseDate(d.Date);
-                    d.high = +d.High;
-                    d.low = +d.Low;
+
+    // Save Ticker Button click handler
+    $(document).on('click', '#saveTickerBtn', function(event){
+        $.ajax({
+            url: '/saveTicker',
+            type: 'POST',
+            data: {
+                symbol: $('#saveTickerBtn').data('symbol')
+            },
+            success: function(data) {
+                location.reload();
+            },
+            error: function(xhr, status, error) {
+                swal({
+                    title: "Error!",
+                    text: xhr.responseJSON.error,
+                    type: "error",
+                    confirmButtonText: "OK"
                 });
-
-                x.domain(d3.extent(data.query.results.quote, function(d) {
-                    return d.date; }));
-                y.domain([
-                    d3.min(data.query.results.quote, function(d) {
-                        return d.low; }),
-                    d3.max(data.query.results.quote, function(d) {
-                        return d.high; })
-                ]);
-
-                var svg = d3.select('#d3-' + stock).transition();
-
-                // Make the changes
-                svg.select(".line")    // change the line
-                    .transition()
-                    .duration(1000)
-                    .attr("d", valueline(data.query.results.quote));
-
-                $('#title-' + stock).text(parseFloat(data.query.results.quote[0].Close).toLocaleString('en-US', { style: 'currency', currency: 'USD' }));
-            });
-        };
-
-        /*
-        $('.panel').on('show.bs.collapse', function (e) {
-            console.log('#' + e.target.id + ' .week');
-            //$('#' + e.target.id + ' .week').click();
+            }
         });
-        */
+    });
 
-        $(document).ready(function () {
-            $(".d3-wrapper").each(function() {
-                var symbol = $(this).data("symbol");
-
-                makeGraph(symbol);
-            });
+    // Remove Ticker Button click handler
+    $(document).on('click', '#removeTickerBtn', function(event){
+        $.ajax({
+            url: '/removeTicker',
+            type: 'DELETE',
+            data: {
+                symbol: $(event.target).data('symbol')
+            },
+            success: function(data) {
+                location.reload();
+            },
+            error: function(xhr, status, error) {
+                swal({
+                    title: "Error!",
+                    text: xhr.responseJSON.error,
+                    type: "error",
+                    confirmButtonText: "OK"
+                });
+            }
         });
+    });
 
-    </script>
+$('.week').on('click', function(e) {
+  console.log($(e.target).data("symbol"));
+  var stock = $(e.target).data("symbol");
+  var end = new Date();
+  var start = new Date();
+  start.setDate(end.getDate()-7);
+  start = start.toISOString().split('T')[0];
+  end = end.toISOString().split('T')[0];
+  updateGraph(stock,start,end);
+
+});
+
+$('.month').on('click', function(e) {
+  console.log($(e.target).data("symbol"));
+  var stock = $(e.target).data("symbol");
+  var end = new Date();
+  var start = new Date();
+  start.setMonth(end.getMonth()-1);
+  start = start.toISOString().split('T')[0];
+  end = end.toISOString().split('T')[0];
+  updateGraph(stock,start,end);
+
+});
+
+$('.3month').on('click', function(e) {
+  console.log($(e.target).data("symbol"));
+  var stock = $(e.target).data("symbol");
+  var end = new Date();
+  var start = new Date();
+  start.setMonth(end.getMonth()-3);
+  start = start.toISOString().split('T')[0];
+  end = end.toISOString().split('T')[0];
+  updateGraph(stock,start,end);
+
+});
+
+$('.year').on('click', function(e) {
+  console.log($(e.target).data("symbol"));
+  var stock = $(e.target).data("symbol");
+  var end = new Date();
+  var start = new Date();
+  start.setFullYear(end.getFullYear()-1);
+  start = start.toISOString().split('T')[0];
+  end = end.toISOString().split('T')[0];
+  updateGraph(stock,start,end);
+});
+
+    function makeGraph(s) {
+
+        var margin = {top: 1, right: -30, bottom: 20, left: 0};
+        var svg = d3.select("#d3-" + s)
+            .append("svg")
+            .attr("preserveAspectRatio", "xMinYMin meet")
+            .attr("viewBox", "0 0 500 400")
+            .classed("svg-content-responsive", true)
+            .append("g")
+            .attr("transform", "translate("
+            + margin.left
+            + "," + margin.top + ")");
+
+        svg.append("path")        // Add the valueline path.
+            .attr("class", "line");
+
+        $('#buttons-' + s + ' .week').click();
+    }
+
+    function updateGraph(t,s,e) {
+
+        var stock = t;
+        var start = s;
+        var end = e;
+        var margin = {top: 1, right: -30, bottom: 20, left: 0},
+            width = $("#stats-" + stock).width() - margin.left - margin.right,
+            height = $("#stats-" + stock).height() - margin.top - margin.bottom;
+
+        var x = d3.time.scale().range([0, width]);
+        var y = d3.scale.linear().range([height, 0]);
+
+        console.log("#d3" + stock);
+        var parseDate = d3.time.format("%Y-%m-%d").parse;
+        var valueline = d3.svg.line()
+            .x(function(d) { return x(d.date); })
+            .y(function(d) { return y(d.high); });
+
+        var inputURL = "http://query.yahooapis.com/v1/public/yql"+
+            "?q=select%20*%20from%20yahoo.finance.historicaldata%20"+
+            "where%20symbol%20%3D%20%22"
+            +stock+"%22%20and%20startDate%20%3D%20%22"
+            +start+"%22%20and%20endDate%20%3D%20%22"
+            +end+"%22&format=json&env=store%3A%2F%2F"
+            +"datatables.org%2Falltableswithkeys";
+
+        // Get the data again
+        d3.json(inputURL, function(error, data) {
+
+            data.query.results.quote.forEach(function(d) {
+                d.date = parseDate(d.Date);
+                d.high = +d.High;
+                d.low = +d.Low;
+            });
+
+            x.domain(d3.extent(data.query.results.quote, function(d) {
+                return d.date; }));
+            y.domain([
+                d3.min(data.query.results.quote, function(d) {
+                    return d.low; }),
+                d3.max(data.query.results.quote, function(d) {
+                    return d.high; })
+            ]);
+
+            var svg = d3.select('#d3-' + stock).transition();
+
+            // Make the changes
+            svg.select(".line")    // change the line
+                .transition()
+                .duration(1000)
+                .attr("d", valueline(data.query.results.quote));
+
+            $('#title-' + stock).text(parseFloat(data.query.results.quote[0].Close).toLocaleString('en-US', { style: 'currency', currency: 'USD' }));
+        });
+    };
+
+    /*
+    $('.panel').on('show.bs.collapse', function (e) {
+        console.log('#' + e.target.id + ' .week');
+        //$('#' + e.target.id + ' .week').click();
+    });
+    */
+
+    $(document).ready(function () {
+        $(".d3-wrapper").each(function() {
+            var symbol = $(this).data("symbol");
+
+            makeGraph(symbol);
+        });
+    });
+
+</script>
