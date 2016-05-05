@@ -28,32 +28,33 @@
             <div class="page-header">
                 <h2>My Tickers: </h2>
             </div>
-            <% if (tickers.length) { %>
                 <div class="panel-group" id="accordion">
-                    <% for(var i = 0; i < tickers.length; i++) { %>
-                        <%- include('../../static/templates/savedTickerItem.ejs', {
-                            tickerSymbol: tickers[i].symbol,
-                            changeInPercent: tickers[i].ChangeinPercent,
-                            open: tickers[i].Open,
-                            todayHigh: tickers[i].DaysHigh,
-                            todayLow: tickers[i].DaysLow,
-                            wkHigh: tickers[i].YearHigh,
-                            wkLow: tickers[i].YearLow,
-                            volume: tickers[i].Volume,
-                            avgVolume: tickers[i].AverageDailyVolume,
-                            marketCap: tickers[i].MarketCapitalization,
-                            peRatio: tickers[i].PERatio,
-                            divYield: tickers[i].DividendYield,
-                            change: tickers[i].change,
-                            collapsed: true
-                        }); %>
+                    <% if (tickers.length) { %>
+                        <% for(var i = 0; i < tickers.length; i++) { %>
+                            <%- include('../../static/templates/savedTickerItem.ejs', {
+                                tickerSymbol: tickers[i].symbol,
+                                changeInPercent: tickers[i].ChangeinPercent,
+                                open: tickers[i].Open,
+                                todayHigh: tickers[i].DaysHigh,
+                                todayLow: tickers[i].DaysLow,
+                                wkHigh: tickers[i].YearHigh,
+                                wkLow: tickers[i].YearLow,
+                                volume: tickers[i].Volume,
+                                avgVolume: tickers[i].AverageDailyVolume,
+                                marketCap: tickers[i].MarketCapitalization,
+                                peRatio: tickers[i].PERatio,
+                                divYield: tickers[i].DividendYield,
+                                change: tickers[i].change,
+                                collapsed: true
+                            }); %>
+                        <% } %>
+                    <% } else { %>
+                        <div class="noSavedTickers text-center">
+                            <h4>You Have no Saved Tickers</h4>
+                        </div>
                     <% } %>
                 </div>
-            <% } else { %>
-                <div class="noSavedTickers text-center">
-                    <h4>You Have no Saved Tickers</h4>
-                </div>
-            <% } %>
+
         </div>
         <% include ../partials/scripts %>
 </body>

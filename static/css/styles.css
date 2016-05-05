@@ -145,7 +145,7 @@ body {
 
 /*
  * -----------------------------------------------------------------
- * Profile Page Styling
+ * Portfolio Page Styling
  * -----------------------------------------------------------------
  */
 
@@ -303,3 +303,17 @@ svg {
     top: 10px;
     left: 0;
 }*/
+
+
+#edit-profile-panel {
+    background-color: #212124;
+    border: none;
+    box-shadow: 0px 1px 1px rgba(0,0,0,0.5);
+    margin: 10px 0px !important;
+    padding: 7px;
+    color: white;
+}
+#edit-profile-panel > * {
+    background-color: #212124;
+    color: white;
+}

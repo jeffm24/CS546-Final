@@ -69,8 +69,18 @@
                         $('#panel-' + renderData.tickerSymbol).replaceWith(html);
                         $('#d3-' + renderData.tickerSymbol).parent().html($graphPanelHtml);
 
-                        //makeGraph(data.result.symbol, "");
+                        // Enable all refresh ticker buttons once ajax request has finished
+                        $('.refresh-ticker-btn').each(function() {
+                            $(this).prop('disabled', false);
+                        });
 
+                        // Display success message to the user
+                        swal({
+                            title: "Success!",
+                            text: renderData.tickerSymbol + " is now up to date.",
+                            type: "success",
+                            confirmButtonText: "OK"
+                        });
                     }
                 });
             },
@@ -290,12 +300,7 @@
                 symbol: $('#saveTickerBtn').data('symbol')
             },
             success: function(data) {
-                $('#panel-search').remove();
-                $('#accordion').html(data.result);
-                $('.savedTickerItem').each(function() {
-                    makeGraph($(this).data('symbol'), "");
-                });
-                //location.reload();
+                location.reload();
             },
             error: function(xhr, status, error) {
                 swal({
@@ -317,7 +322,14 @@
                 symbol: $(event.target).data('symbol')
             },
             success: function(data) {
-                $('#panel-' + $(event.target).data('symbol')).remove();
+                if (data.result.length) {
+                    // If there are still any tickers left, just remove the removed one from the UI
+                    $('#panel-' + $(event.target).data('symbol')).remove();
+                } else {
+                    // If there are none left, replace with the "You have no saved tickers" message
+                    $('#accordion').html('<div class="noSavedTickers text-center"><h4>You Have no Saved Tickers</h4></div>');
+                }
+
                 removeFromCache($(event.target).data('symbol'));
             },
             error: function(xhr, status, error) {
@@ -333,6 +345,10 @@
 
     // Refresh Ticker Button click handler
     $(document).on('click', '.refresh-ticker-btn', function(event){
+        // Disable all refresh ticker buttons while ajax request is running
+        $('.refresh-ticker-btn').each(function() {
+            $(this).prop('disabled', true);
+        });
         updateTicker($(this).data('symbol'));
     });
 
