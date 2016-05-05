@@ -31,7 +31,7 @@
             <% if (tickers.length) { %>
                 <div class="panel-group" id="accordion">
                     <% for(var i = 0; i < tickers.length; i++) { %>
-                        <%- include('../partials/tickerItem.ejs', {
+                        <%- include('../../static/templates/savedTickerItem.ejs', {
                             tickerSymbol: tickers[i].symbol,
                             changeInPercent: tickers[i].ChangeinPercent,
                             open: tickers[i].Open,
@@ -44,7 +44,8 @@
                             marketCap: tickers[i].MarketCapitalization,
                             peRatio: tickers[i].PERatio,
                             divYield: tickers[i].DividendYield,
-                            change: tickers[i].change
+                            change: tickers[i].change,
+                            collapsed: true
                         }); %>
                     <% } %>
                 </div>

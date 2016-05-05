@@ -1,29 +1,30 @@
-<div class="panel panel-default tickerItem <%= change %>">
+<div id="panel-<%= tickerSymbol %>" class="panel panel-default tickerItem savedTickerItem <%= change %>" data-symbol="<%= tickerSymbol %>">
     <a data-toggle="collapse" data-parent="#accordion" href="#collapse<%= tickerSymbol %>">
         <div class="panel-heading">
             <h3 class="panel-title"><%= tickerSymbol %> <span class="change-percent <%= change %>">(<%= changeInPercent %>)</span></h3>
         </div>
     </a>
-    <div id="collapse<%= tickerSymbol %>" class="panel-collapse collapse out <%= change %>">
+    <div id="collapse<%= tickerSymbol %>" class="panel-collapse collapse <% if (collapsed) { %> out <% } else { %> in <% } %> <%= change %>">
         <div class="panel-body">
             <div class="row">
                 <div class="col-xs-12 col-sm-6">
-                  <div class = "sub-panel graph-panel text-center">
-                    <div class = "text-center price" id = "title-<%= tickerSymbol %>"></div>
-					          <div class="d3-wrapper" id="d3-<%= tickerSymbol %>" data-symbol = "<%= tickerSymbol %>"></div>
+                    <div class = "sub-panel graph-panel text-center">
+                        <div class = "text-center price" id = "title-<%= tickerSymbol %>"></div>
+                        <div class="d3-wrapper" id="d3-<%= tickerSymbol %>" data-symbol = "<%= tickerSymbol %>"></div>
 
-                    <div class = "buttons btn-group" id="buttons-<%= tickerSymbol %>">
-                        <button class="btn btn-primary btn-graph week" type="button" data-symbol = "<%= tickerSymbol %>" >1W</button>
-                        <button class="btn btn-primary btn-graph month" type="button" data-symbol = "<%= tickerSymbol %>">1M</button>
-                        <button class="btn btn-primary btn-graph 3month" type="button" data-symbol = "<%= tickerSymbol %>">3M</button>
-                        <button class="btn btn-primary btn-graph year" type="button" data-symbol = "<%= tickerSymbol %>">1Y</button>
-
+                        <div class = "buttons btn-group" id="buttons-<%= tickerSymbol %>">
+                            <button class="btn btn-primary btn-graph week" type="button" data-symbol = "<%= tickerSymbol %>" >1W</button>
+                            <button class="btn btn-primary btn-graph month" type="button" data-symbol = "<%= tickerSymbol %>">1M</button>
+                            <button class="btn btn-primary btn-graph 3month" type="button" data-symbol = "<%= tickerSymbol %>">3M</button>
+                            <button class="btn btn-primary btn-graph year" type="button" data-symbol = "<%= tickerSymbol %>">1Y</button>
+                        </div>
                     </div>
-                  </div>
                 </div>
                 <div class="col-xs-12 col-sm-6">
                     <div id="stats-<%= tickerSymbol %>" class="sub-panel stat-panel">
-                        <h4>Statistics</h4>
+                        <h4>Statistics
+                            <button type="button" class="btn btn-primary refresh-ticker-btn pull-right" data-symbol="<%= tickerSymbol %>"><span class="glyphicon glyphicon-refresh" aria-hidden="true"></span></button><div class="clearfix"></div>
+                        </h4>
                         <hr />
                         <div class="row">
                             <div class="col-xs-6">
@@ -74,7 +75,7 @@
                     </div>
                 </div>
             </div>
-            <button type="button" id="removeTickerBtn" class="btn btn-danger pull-right" data-symbol="<%= tickerSymbol %>">Remove</button><div class="clearfix"></div>
+            <button type="button" class="btn btn-danger remove-ticker-btn pull-right" data-symbol="<%= tickerSymbol %>">Remove</button><div class="clearfix"></div>
         </div>
     </div>
 </div>
