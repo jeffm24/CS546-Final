@@ -474,14 +474,9 @@
 
     }
 
-    // Clicks the week view button on first expand of each collapse-panel
+    // Clicks the last active button on expand of each panel (to redraw the graph)
     $('.panel').on('shown.bs.collapse', function (e) {
-
-        if (!$(this).data('shown')) {
-
-            $('#' + e.target.id + ' .week').click();
-            $(this).data("shown", 'true');
-        }
+        $('#' + e.target.id + ' .active').click();
     });
 
     $(document).ready(function () {
