@@ -350,6 +350,68 @@ app.post("/search", function(request, response) {
 
 });
 
+// Refresh ticker route
+app.post("/refreshTicker", function(request, response) {
+
+    // Check if the ticker is up to date in the database before querying yahoo finance
+    tickerData.isTickerUpToDate(request.body.search).then(function(upToDate) {
+
+        if (upToDate) {
+            // If the ticker is up to date, then just get the ticker info from the database and respond with it
+            tickerData.getTickerInfo(request.body.search).then(function(tickerInfo) {
+
+                tickerInfo.userSavedTickers = response.locals.user.savedTickers;
+
+                if (tickerInfo.ChangeinPercent.charAt(0) === '+') {
+                    tickerInfo.change = "positive";
+                } else {
+                    tickerInfo.change = "negative";
+                }
+
+                // Success respond with the ticker info
+                response.json({result: tickerInfo});
+            });
+        } else {
+            // If the ticker is not up to date, then query yahoo finance and update it before responding
+            httpRequest('https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20yahoo.finance.quotes%20where%20symbol%20in%20(%22' + request.body.search + '%22)%0A%09%09&format=json&env=http%3A%2F%2Fdatatables.org%2Falltables.env&callback=', function (error, data, body) {
+                if (!error && data.statusCode == 200) {
+
+                    var query = JSON.parse(body).query;
+                    var lastQueried = new Date(query.created);
+                    var info = query.results.quote;
+
+                    // Check to see if actual data was recieved
+                    if (info.Open) {
+
+                        // Update the ticker in the database with the results from the Yahoo query
+                        tickerData.refreshTicker(request.body.search, lastQueried, info).then(function(tickerInfo) {
+
+                            tickerInfo.userSavedTickers = response.locals.user.savedTickers;
+
+                            if (info.ChangeinPercent.charAt(0) === '+') {
+                                tickerInfo.change = "positive";
+                            } else {
+                                tickerInfo.change = "negative";
+                            }
+
+                            // Success respond the ticker info
+                            response.json({result: tickerInfo});
+                        });
+                    } else {
+                        response.json({result: "Query returned no results.", notFound: true});
+                    }
+                } else {
+                    response.status(500).json({error: error});
+                }
+            });
+        }
+
+    }, function(errorMessage) {
+        response.json({result: errorMessage, notFound: true});
+    });
+
+});
+
 // Route for saving a ticker
 app.post("/saveTicker", function(request, response) {
 

@@ -188,76 +188,35 @@
         });
     });
 
-$(document).on('click','.week', function(e) {
-  $(e.target).addClass('active').siblings().removeClass('active');
-  console.log($(e.target).data("symbol"));
-  var stock = $(e.target).data("symbol");
-  var search = $(e.target).data("search");
-  var end = new Date();
-  var start = new Date();
-  start.setDate(end.getDate()-7);
-  start = start.toISOString().split('T')[0];
-  end = end.toISOString().split('T')[0];
-  if(search){
-    updateGraph(stock,start,end,"Search");
-  } else {
-    updateGraph(stock,start,end,"");
-  }
-});
 
-$(document).on('click','.month', function(e) {
-  $(e.target).addClass('active').siblings().removeClass('active');
-  console.log($(e.target).data("symbol"));
-  var stock = $(e.target).data("symbol");
-  var search = $(e.target).data("search");
-  var end = new Date();
-  var start = new Date();
-  start.setMonth(end.getMonth()-1);
-  start = start.toISOString().split('T')[0];
-  end = end.toISOString().split('T')[0];
-  if(search){
-    updateGraph(stock,start,end,"Search");
-  } else {
-    updateGraph(stock,start,end,"");
-  }
-});
+    // Click handler for the graph time period buttons
+    $(document).on('click','.btn-graph', function(e) {
+        $(e.target).addClass('active').siblings().removeClass('active');
+        console.log($(e.target).data("symbol"));
+        var stock = $(e.target).data("symbol");
+        var search = $(e.target).data("search");
+        var end = new Date();
+        var start = new Date();
 
-$(document).on('click','.3month', function(e) {
-  $(e.target).addClass('active').siblings().removeClass('active');
-  console.log($(e.target).data("symbol"));
-  var stock = $(e.target).data("symbol");
-  var search = $(e.target).data("search");
-  var end = new Date();
-  var start = new Date();
-  start.setMonth(end.getMonth()-3);
-  start = start.toISOString().split('T')[0];
-  end = end.toISOString().split('T')[0];
-  if(search){
-    updateGraph(stock,start,end,"Search");
-  } else {
-    updateGraph(stock,start,end,"");
-  }
-
-});
-
-$(document).on('click','.year', function(e) {
-  $(e.target).addClass('active').siblings().removeClass('active');
-  console.log($(e.target).data("symbol"));
-  var stock = $(e.target).data("symbol");
-  var search = $(e.target).data("search");
-  var end = new Date();
-  var start = new Date();
-  start.setFullYear(end.getFullYear()-1);
-  start = start.toISOString().split('T')[0];
-  end = end.toISOString().split('T')[0];
-  if(search){
-    updateGraph(stock,start,end,"Search");
-  } else {
-    updateGraph(stock,start,end,"");
-  }
-});
+        if ($(this).hasClass('week')) {
+            start.setDate(end.getDate() - 7);
+        } else if ($(this).hasClass('month')) {
+            start.setMonth(end.getMonth() - 1);
+        } else if ($(this).hasClass('3month')) {
+            start.setMonth(end.getMonth() - 3);
+        } else if ($(this).hasClass('year')) {
+            start.setFullYear(end.getFullYear() - 1);
+        }
 
 
+        start = start.toISOString().split('T')[0];
+        end = end.toISOString().split('T')[0];
+        if(search){
+            updateGraph(stock,start,end,"Search");
+        } else {
+            updateGraph(stock,start,end,"");
+        }
+    });
 
     function makeGraph(s, tag) {
 //var margin = {top: 1, right: 0, bottom: 20, left: 0};
@@ -403,10 +362,19 @@ $(document).on('click','.year', function(e) {
             makeGraph(symbol,"");
         });
     });
+
     $( window ).resize(function() {
       $(".d3-wrapper").each(function() {
         var s = $(this).data("symbol");
           $('#buttons' + "" + '-' + s + ' .active').click();
       });
     });
+
+
+    // Run the update function every hour
+    setInterval(function() {
+
+    }, 3600000);
+
+
 </script>

@@ -11,11 +11,13 @@
                   <div class = "sub-panel graph-panel text-center">
                     <div class = "text-center price" id = "title-<%= tickerSymbol %>"></div>
 					          <div class="d3-wrapper" id="d3-<%= tickerSymbol %>" data-symbol = "<%= tickerSymbol %>"></div>
+
                     <div class = "buttons btn-group" id="buttons-<%= tickerSymbol %>">
-                        <button class="btn btn-primary week" type="button" data-symbol = "<%= tickerSymbol %>" >1W</button>
-                        <button class="btn btn-primary month" type="button" data-symbol = "<%= tickerSymbol %>">1M</button>
-                        <button class="btn btn-primary 3month" type="button" data-symbol = "<%= tickerSymbol %>">3M</button>
-                        <button class="btn btn-primary year" type="button" data-symbol = "<%= tickerSymbol %>">1Y</button>
+                        <button class="btn btn-primary btn-graph week" type="button" data-symbol = "<%= tickerSymbol %>" >1W</button>
+                        <button class="btn btn-primary btn-graph month" type="button" data-symbol = "<%= tickerSymbol %>">1M</button>
+                        <button class="btn btn-primary btn-graph 3month" type="button" data-symbol = "<%= tickerSymbol %>">3M</button>
+                        <button class="btn btn-primary btn-graph year" type="button" data-symbol = "<%= tickerSymbol %>">1Y</button>
+
                     </div>
                   </div>
                 </div>
