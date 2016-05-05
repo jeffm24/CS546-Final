@@ -21,6 +21,65 @@
 
 <!-- Scripts we made -->
 <script>
+    // Calls the server-side route for updating the ticker with the given symbol
+    function updateTicker(tickerSymbol) {
+        $.ajax({
+            url: '/updateTicker',
+            type: 'POST',
+            data: {
+                symbol: tickerSymbol
+            },
+            success: function(data) {
+
+                // Create the render data object to be passed to the renderer
+                var renderData = {
+                    tickerSymbol: data.result.symbol,
+                    changeInPercent: data.result.ChangeinPercent,
+                    open: data.result.Open,
+                    todayHigh: data.result.DaysHigh,
+                    todayLow: data.result.DaysLow,
+                    wkHigh: data.result.YearHigh,
+                    wkLow: data.result.YearLow,
+                    volume: data.result.Volume,
+                    avgVolume: data.result.AverageDailyVolume,
+                    marketCap: data.result.MarketCapitalization,
+                    peRatio: data.result.PERatio,
+                    divYield: data.result.DividendYield,
+                    change: data.result.change
+                };
+
+                // check the current state of the panel associated with this ticker to set collapsed or not
+                if ($('#collapse' + renderData.tickerSymbol).hasClass('in')) {
+                    renderData.collapsed = false;
+                } else {
+                    renderData.collapsed = true;
+                }
+
+                // Get the contents of the openTickerItem ejs file to pass to the renderer
+                $.ajax({
+                    url: '/assets/templates/savedTickerItem.ejs',
+                    type: 'GET',
+                    success: function(openTickerItemEJS) {
+                        // Replace the current ticker item with the rendered openTickerItem
+                        var html = ejs.render(openTickerItemEJS, renderData);
+
+                        $('#panel-' + renderData.tickerSymbol).replaceWith(html);
+                        makeGraph(data.result.symbol, "");
+
+                    }
+                });
+            },
+            error: function(xhr, status, error) {
+                swal({
+                    title: "Error!",
+                    text: xhr.responseJSON.error,
+                    type: "error",
+                    confirmButtonText: "OK"
+                });
+            }
+        });
+    }
+
     //For signout
     $('#signOutBtn').on('click', function(e) {
 
@@ -190,58 +249,7 @@
 
     // Refresh Ticker Button click handler
     $(document).on('click', '.refresh-ticker-btn', function(event){
-        $.ajax({
-            url: '/updateTicker',
-            type: 'POST',
-            data: {
-                symbol: $(this).data('symbol')
-            },
-            success: function(data) {
-
-                // Create the render data object to be passed to the renderer
-                var renderData = {
-                    tickerSymbol: data.result.symbol,
-                    changeInPercent: data.result.ChangeinPercent,
-                    open: data.result.Open,
-                    todayHigh: data.result.DaysHigh,
-                    todayLow: data.result.DaysLow,
-                    wkHigh: data.result.YearHigh,
-                    wkLow: data.result.YearLow,
-                    volume: data.result.Volume,
-                    avgVolume: data.result.AverageDailyVolume,
-                    marketCap: data.result.MarketCapitalization,
-                    peRatio: data.result.PERatio,
-                    divYield: data.result.DividendYield,
-                    change: data.result.change,
-                    collapsed: false
-                };
-
-                // Get the contents of the openTickerItem ejs file to pass to the renderer
-                $.ajax({
-                    url: '/assets/templates/savedTickerItem.ejs',
-                    type: 'GET',
-                    success: function(openTickerItemEJS) {
-                        // Replace the current ticker item with the rendered openTickerItem
-                        var html = ejs.render(openTickerItemEJS, renderData);
-
-                        console.log("Replacing with:");
-                        console.log(html);
-
-                        $('#panel-' + renderData.tickerSymbol).replaceWith(html);
-                        makeGraph(data.result.symbol, "");
-
-                    }
-                });
-            },
-            error: function(xhr, status, error) {
-                swal({
-                    title: "Error!",
-                    text: xhr.responseJSON.error,
-                    type: "error",
-                    confirmButtonText: "OK"
-                });
-            }
-        });
+        updateTicker($(this).data('symbol'));
     });
 
 
@@ -427,9 +435,11 @@
     });
 
 
-    // Run the update function every hour
+    // Run the update ticker function every hour
     setInterval(function() {
-
+        $('.savedTickerItem').each(function() {
+            updateTicker($(this).data('symbol'));
+        });
     }, 3600000);
 
 
