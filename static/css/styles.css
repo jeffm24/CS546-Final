@@ -52,6 +52,10 @@ body {
     box-shadow: inset 0px 0px 10px 0px rgba(0,0,0,0.75);
 }
 
+.btn:focus,.btn:active {
+   outline: none !important;
+}
+
 /* overriding jquery styling */
 .ui-autocomplete {
     background: lightgrey;
