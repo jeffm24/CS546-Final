@@ -22,6 +22,79 @@
 <!-- Scripts we made -->
 <script>
     //For signout
+    var cache = [];
+
+    function getFromCache(ticker){
+
+      var data = cache.filter(function (stock) {
+          return stock.ticker === ticker;
+      }).shift();
+
+
+      if(!data) {
+
+        data = null;} else {
+
+        }
+
+      return data;
+    };
+
+    function isCacheUpToDate(ticker,range) {
+      console.log("CHECKING IF " + ticker + " FOR " + range + " IS UP TO DATE ");
+
+      var data = getFromCache(ticker);
+
+      if(data){
+          console.log(ticker + " IS IN CACHE");
+          var now = new Date();
+          var lastRange = data.range;
+          var lastUpdate = data.lastUpdate;
+          var hoursPassed = Math.abs(now - lastUpdate) / 36e5;
+
+          if(lastRange !== range){
+              console.log("BUT NOT IN THE RIGHT RANGE");
+              data = null;
+            } else{
+              console.log("AND IS IN THE RIGHT RANGE");
+              if(hoursPassed > 5){
+                console.log("BUT HASNT BEEN UPDATED IN A WHILE");
+                data = null;
+              }
+            }
+        } else {
+              data = null;
+          }
+      return data;
+
+    };
+
+    function updateCache(ticker,data,range){
+      console.log("UPDATED CACHE")
+      var stock = getFromCache(ticker);
+      var now = Date();
+
+      if(stock){
+        stock.data = data;
+        stock.range = range;
+        stock.lastUpdate = now;
+      } else {
+
+        cache.push({ticker: ticker, data: data, range: range, lastUpdate: new Date()})
+        stock = getFromCache(ticker);
+      }
+
+      return stock;
+    };
+
+    function removeFromCache(ticker){
+      var stock = getFromCache(ticker);
+      var indexOfStock = cache.indexOf(stock);
+
+      // remove the question
+      cache.splice(indexOfStock, 1);
+    };
+
     $('#signOutBtn').on('click', function(e) {
 
         $.ajax({
@@ -176,6 +249,7 @@
             },
             success: function(data) {
                 location.reload();
+                removeFromCache($(event.target).data('symbol'));
             },
             error: function(xhr, status, error) {
                 swal({
@@ -192,29 +266,33 @@
     // Click handler for the graph time period buttons
     $(document).on('click','.btn-graph', function(e) {
         $(e.target).addClass('active').siblings().removeClass('active');
-        console.log($(e.target).data("symbol"));
+        //console.log($(e.target).data("symbol"));
         var stock = $(e.target).data("symbol");
         var search = $(e.target).data("search");
         var end = new Date();
         var start = new Date();
-
+        var range;
         if ($(this).hasClass('week')) {
             start.setDate(end.getDate() - 7);
+            range = "1W";
         } else if ($(this).hasClass('month')) {
             start.setMonth(end.getMonth() - 1);
+            range = "1M";
         } else if ($(this).hasClass('3month')) {
             start.setMonth(end.getMonth() - 3);
+            range = "3M";
         } else if ($(this).hasClass('year')) {
             start.setFullYear(end.getFullYear() - 1);
+            range = "1Y";
         }
 
 
         start = start.toISOString().split('T')[0];
         end = end.toISOString().split('T')[0];
         if(search){
-            updateGraph(stock,start,end,"Search");
+            updateGraph(stock,start,end,"Search",range);
         } else {
-            updateGraph(stock,start,end,"");
+            updateGraph(stock,start,end,"",range);
         }
     });
 
@@ -241,39 +319,23 @@
         $('#buttons' + tag + '-' + s + ' .week').click();
     }
 
-    function updateGraph(t,s,e,tag) {
+    function updateGraph(t,s,e,tag,range) {
 
         var stock = t;
         var start = s;
         var end = e;
-        var margin = {top: 0, right: 0, bottom: 0, left: 0},
-            width = $("#d3" + tag + "-" + stock).outerWidth() - margin.left - margin.right,
-            height = $("#d3" + tag + "-" + stock).outerHeight() - margin.top - margin.bottom;
+        var DATA;
 
-        // console.log("#d3-" + stock);
-        // console.log($("#d3-" + stock).outerWidth());
-        // console.log($("#d3-" + stock).outerHeight());
-        // console.log("graph-panel");
-        // console.log(width);
-        // console.log(height);
+        DATA = isCacheUpToDate(stock,range);
 
-        var x = d3.time.scale().range([0, width]);
-        var y = d3.scale.linear().range([height, 0]);
-
-        //console.log("#d3" + stock);
-        var parseDate = d3.time.format("%Y-%m-%d").parse;
-        var valueline = d3.svg.line()
-            .x(function(d) { return x(d.date); })
-            .y(function(d) { return y(d.high); });
-
-        var inputURL = "http://query.yahooapis.com/v1/public/yql"+
-            "?q=select%20*%20from%20yahoo.finance.historicaldata%20"+
-            "where%20symbol%20%3D%20%22"
-            +stock+"%22%20and%20startDate%20%3D%20%22"
-            +start+"%22%20and%20endDate%20%3D%20%22"
-            +end+"%22&format=json&env=store%3A%2F%2F"
-            +"datatables.org%2Falltableswithkeys";
-
+        // if(DATA){
+        //   console.log("UPDATE GRAPH - FOUND IN CACHE");
+        //   console.log("UPDATE GARPH " + DATA.data);
+        //   // console.log(DATA.range);
+        //   // console.log(DATA.lastUpdate);
+        // }
+        if(!DATA){
+            console.log("UPDATE GRAPH - CACHE NEEDS UPDATING");
             var requestConfig = {
                 method: "POST",
                 url: "/searchHistory",
@@ -285,65 +347,63 @@
               })
             };
             $.ajax(requestConfig).then(function(data) {
-
-              data.result.forEach(function(d) {
-                  d.date = parseDate(d.Date);
-                  d.high = +d.High;
-                  d.low = +d.Low;
-              });
-
-              x.domain(d3.extent(data.result, function(d) {
-                  return d.date; }));
-              y.domain([
-                  d3.min(data.result, function(d) {
-                      return d.low; }),
-                  d3.max(data.result, function(d) {
-                      return d.high; })
-              ]);
-
-              var svg = d3.select("#d3" + tag + "-" + stock).transition();
-
-              // Make the changes
-              svg.select(".line")    // change the line
-                  .transition()
-                  .duration(1000)
-                  .attr("d", valueline(data.result));
-
-              $('#title-' + stock).text(parseFloat(data.result[0].Open).toLocaleString('en-US', { style: 'currency', currency: 'USD' }));
-
-
-
-
+                DATA = updateCache(stock,data,range);
+                drawGraph(t,s,e,tag,DATA.data);
             });
-        // Get the data again
-        // d3.json(inputURL, function(error, data) {
-        //
-        //     data.query.results.quote.forEach(function(d) {
-        //         d.date = parseDate(d.Date);
-        //         d.high = +d.High;
-        //         d.low = +d.Low;
-        //     });
-        //
-        //     x.domain(d3.extent(data.query.results.quote, function(d) {
-        //         return d.date; }));
-        //     y.domain([
-        //         d3.min(data.query.results.quote, function(d) {
-        //             return d.low; }),
-        //         d3.max(data.query.results.quote, function(d) {
-        //             return d.high; })
-        //     ]);
-        //
-        //     var svg = d3.select("#d3" + tag + "-" + stock).transition();
-        //
-        //     // Make the changes
-        //     svg.select(".line")    // change the line
-        //         .transition()
-        //         .duration(1000)
-        //         .attr("d", valueline(data.query.results.quote));
-        //
-        //     $('#title-' + stock).text(parseFloat(data.query.results.quote[0].Close).toLocaleString('en-US', { style: 'currency', currency: 'USD' }));
-        // });
+        }
+
+        if(DATA){
+          drawGraph(t,s,e,tag,DATA.data);
+        }
+
     };
+
+    function drawGraph(t,s,e,tag,DATA){
+      var stock = t;
+      var start = s;
+      var end = e;
+
+      var margin = {top: 0, right: 0, bottom: 0, left: 0},
+          width = $("#d3" + tag + "-" + stock).outerWidth() - margin.left - margin.right,
+          height = $("#d3" + tag + "-" + stock).outerHeight() - margin.top - margin.bottom;
+
+
+      var x = d3.time.scale().range([0, width]);
+      var y = d3.scale.linear().range([height, 0]);
+
+      //console.log("#d3" + stock);
+      var parseDate = d3.time.format("%Y-%m-%d").parse;
+      var valueline = d3.svg.line()
+          .x(function(d) { return x(d.date); })
+          .y(function(d) { return y(d.high); });
+
+
+      DATA.result.forEach(function(d) {
+          d.date = parseDate(d.Date);
+          d.high = +d.High;
+          d.low = +d.Low;
+      });
+
+      x.domain(d3.extent(DATA.result, function(d) {
+          return d.date; }));
+      y.domain([
+          d3.min(DATA.result, function(d) {
+              return d.low; }),
+          d3.max(DATA.result, function(d) {
+              return d.high; })
+      ]);
+
+      var svg = d3.select("#d3" + tag + "-" + stock).transition();
+
+      // Make the changes
+      svg.select(".line")    // change the line
+          .transition()
+          .duration(1000)
+          .attr("d", valueline(DATA.result));
+
+      $('#title-' + stock).text(parseFloat(DATA.result[0].Open).toLocaleString('en-US', { style: 'currency', currency: 'USD' }));
+
+    }
 
     // Clicks the week view button on first expand of each collapse-panel
     $('.panel').on('shown.bs.collapse', function (e) {
@@ -364,6 +424,9 @@
     });
 
     $( window ).resize(function() {
+      if($('.searchButtons'))
+          $('.searchButtons' + ' .active').click();
+
       $(".d3-wrapper").each(function() {
         var s = $(this).data("symbol");
           $('#buttons' + "" + '-' + s + ' .active').click();

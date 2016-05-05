@@ -239,12 +239,12 @@ app.post("/searchHistory", function(request, response) {
             });
       }
       else {
-          console.log("TICKER NEEDS UPDATING FROM " + result + " to " + request.body.end);
           var end = new Date();
           var start = new Date(result);
           start.setDate(start.getDate() + 1);
           start = start.toISOString().split('T')[0];
           end = end.toISOString().split('T')[0];
+          console.log("TICKER NEEDS UPDATING FROM " + start + " to " + request.body.end);
           var inputURL = "http://query.yahooapis.com/v1/public/yql"+
                         "?q=select%20*%20from%20yahoo.finance.historicaldata%20"+
                         "where%20symbol%20%3D%20%22"
