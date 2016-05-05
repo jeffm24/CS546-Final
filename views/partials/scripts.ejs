@@ -125,7 +125,7 @@
                                   var html = ejs.render(searchTickerItemEJS, renderData);
                                   $('#searchResult').html(html);
                                   makeGraph(data.result.symbol,"Search");
-                                  $('#buttons' + "Search" + '-' + data.result.symbol + ' .week').click();
+
                               }
                           });
                       }
@@ -189,6 +189,7 @@
     });
 
 $(document).on('click','.week', function(e) {
+  $(e.target).addClass('active').siblings().removeClass('active');
   console.log($(e.target).data("symbol"));
   var stock = $(e.target).data("symbol");
   var search = $(e.target).data("search");
@@ -205,6 +206,7 @@ $(document).on('click','.week', function(e) {
 });
 
 $(document).on('click','.month', function(e) {
+  $(e.target).addClass('active').siblings().removeClass('active');
   console.log($(e.target).data("symbol"));
   var stock = $(e.target).data("symbol");
   var search = $(e.target).data("search");
@@ -221,6 +223,7 @@ $(document).on('click','.month', function(e) {
 });
 
 $(document).on('click','.3month', function(e) {
+  $(e.target).addClass('active').siblings().removeClass('active');
   console.log($(e.target).data("symbol"));
   var stock = $(e.target).data("symbol");
   var search = $(e.target).data("search");
@@ -238,6 +241,7 @@ $(document).on('click','.3month', function(e) {
 });
 
 $(document).on('click','.year', function(e) {
+  $(e.target).addClass('active').siblings().removeClass('active');
   console.log($(e.target).data("symbol"));
   var stock = $(e.target).data("symbol");
   var search = $(e.target).data("search");
@@ -256,13 +260,18 @@ $(document).on('click','.year', function(e) {
 
 
     function makeGraph(s, tag) {
+//var margin = {top: 1, right: 0, bottom: 20, left: 0};
+        var margin = {top: 0, right: 0, bottom: 0, left: 0},
+        width = $("#d3" + tag + "-" + s).outerWidth() - margin.left - margin.right,
+        height = $("#d3" + tag + "-" + s).outerHeight() - margin.top - margin.bottom;
 
-        var margin = {top: 1, right: -30, bottom: 20, left: 0};
         var svg = d3.select("#d3" + tag + "-" + s)
             .append("svg")
-            .attr("preserveAspectRatio", "xMinYMin meet")
-            .attr("viewBox", "0 0 500 400")
-            .classed("svg-content-responsive", true)
+            // .attr("viewBox", "0 0 500 400")
+            // .attr("preserveAspectRatio", "xMinYMin slice")
+            // .classed("svg-content-responsive", true)
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
             .append("g")
             .attr("transform", "translate("
             + margin.left
@@ -270,7 +279,7 @@ $(document).on('click','.year', function(e) {
 
         svg.append("path")        // Add the valueline path.
             .attr("class", "line");
-
+        $('#buttons' + tag + '-' + s + ' .week').click();
     }
 
     function updateGraph(t,s,e,tag) {
@@ -278,9 +287,16 @@ $(document).on('click','.year', function(e) {
         var stock = t;
         var start = s;
         var end = e;
-        var margin = {top: 1, right: -30, bottom: 20, left: 0},
-            width = $("#stats-" + stock).width() - margin.left - margin.right,
-            height = $("#stats-" + stock).height() - margin.top - margin.bottom;
+        var margin = {top: 0, right: 0, bottom: 0, left: 0},
+            width = $("#d3" + tag + "-" + stock).outerWidth() - margin.left - margin.right,
+            height = $("#d3" + tag + "-" + stock).outerHeight() - margin.top - margin.bottom;
+
+        // console.log("#d3-" + stock);
+        // console.log($("#d3-" + stock).outerWidth());
+        // console.log($("#d3-" + stock).outerHeight());
+        // console.log("graph-panel");
+        // console.log(width);
+        // console.log(height);
 
         var x = d3.time.scale().range([0, width]);
         var y = d3.scale.linear().range([height, 0]);
@@ -299,40 +315,82 @@ $(document).on('click','.year', function(e) {
             +end+"%22&format=json&env=store%3A%2F%2F"
             +"datatables.org%2Falltableswithkeys";
 
-        // Get the data again
-        d3.json(inputURL, function(error, data) {
+            var requestConfig = {
+                method: "POST",
+                url: "/searchHistory",
+                contentType: 'application/json',
+                data: JSON.stringify({
+                  ticker: stock,
+                  start: start,
+                  end: end
+              })
+            };
+            $.ajax(requestConfig).then(function(data) {
 
-            data.query.results.quote.forEach(function(d) {
-                d.date = parseDate(d.Date);
-                d.high = +d.High;
-                d.low = +d.Low;
+              data.result.forEach(function(d) {
+                  d.date = parseDate(d.Date);
+                  d.high = +d.High;
+                  d.low = +d.Low;
+              });
+
+              x.domain(d3.extent(data.result, function(d) {
+                  return d.date; }));
+              y.domain([
+                  d3.min(data.result, function(d) {
+                      return d.low; }),
+                  d3.max(data.result, function(d) {
+                      return d.high; })
+              ]);
+
+              var svg = d3.select("#d3" + tag + "-" + stock).transition();
+
+              // Make the changes
+              svg.select(".line")    // change the line
+                  .transition()
+                  .duration(1000)
+                  .attr("d", valueline(data.result));
+
+              $('#title-' + stock).text(parseFloat(data.result[0].Open).toLocaleString('en-US', { style: 'currency', currency: 'USD' }));
+
+
+
+
             });
-
-            x.domain(d3.extent(data.query.results.quote, function(d) {
-                return d.date; }));
-            y.domain([
-                d3.min(data.query.results.quote, function(d) {
-                    return d.low; }),
-                d3.max(data.query.results.quote, function(d) {
-                    return d.high; })
-            ]);
-
-            var svg = d3.select("#d3" + tag + "-" + stock).transition();
-
-            // Make the changes
-            svg.select(".line")    // change the line
-                .transition()
-                .duration(1000)
-                .attr("d", valueline(data.query.results.quote));
-
-            $('#title-' + stock).text(parseFloat(data.query.results.quote[0].Close).toLocaleString('en-US', { style: 'currency', currency: 'USD' }));
-        });
+        // Get the data again
+        // d3.json(inputURL, function(error, data) {
+        //
+        //     data.query.results.quote.forEach(function(d) {
+        //         d.date = parseDate(d.Date);
+        //         d.high = +d.High;
+        //         d.low = +d.Low;
+        //     });
+        //
+        //     x.domain(d3.extent(data.query.results.quote, function(d) {
+        //         return d.date; }));
+        //     y.domain([
+        //         d3.min(data.query.results.quote, function(d) {
+        //             return d.low; }),
+        //         d3.max(data.query.results.quote, function(d) {
+        //             return d.high; })
+        //     ]);
+        //
+        //     var svg = d3.select("#d3" + tag + "-" + stock).transition();
+        //
+        //     // Make the changes
+        //     svg.select(".line")    // change the line
+        //         .transition()
+        //         .duration(1000)
+        //         .attr("d", valueline(data.query.results.quote));
+        //
+        //     $('#title-' + stock).text(parseFloat(data.query.results.quote[0].Close).toLocaleString('en-US', { style: 'currency', currency: 'USD' }));
+        // });
     };
 
     // Clicks the week view button on first expand of each collapse-panel
     $('.panel').on('shown.bs.collapse', function (e) {
 
         if (!$(this).data('shown')) {
+
             $('#' + e.target.id + ' .week').click();
             $(this).data("shown", 'true');
         }
@@ -345,5 +403,10 @@ $(document).on('click','.year', function(e) {
             makeGraph(symbol,"");
         });
     });
-
+    $( window ).resize(function() {
+      $(".d3-wrapper").each(function() {
+        var s = $(this).data("symbol");
+          $('#buttons' + "" + '-' + s + ' .active').click();
+      });
+    });
 </script>

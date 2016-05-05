@@ -224,9 +224,9 @@ body {
 }
 
 .stat-panel, .graph-panel{
-    padding-left: 30px;
-    padding-right: 30px;
-    height: 100%;
+    padding-left: 25px;
+    padding-right: 25px;
+    height: 27em;
 }
 
 
@@ -237,6 +237,7 @@ body {
 .stat-item > * {
     margin: 0px;
 }
+
 
 .stat-val {
     font-weight: bold;
@@ -273,16 +274,22 @@ path {
 .price {
   font-size: 3em;
 }
-.buttons {
-  width: 190px ;
-  margin-left: auto ;
-  margin-right: auto ;
-}
+
+
 .d3-wrapper {
+  height: 70%;
+}
+
+svg {
+  height: 100%;
+  width: 100%;
+}
+
+/*.d3-wrapper {
     display: inline-block;
     position: relative;
     width: 100%;
-    padding-bottom: 67%; /* aspect ratio */
+    padding-bottom: 100%;
     vertical-align: top;
     overflow: hidden;
 }
@@ -291,4 +298,4 @@ path {
     position: absolute;
     top: 10px;
     left: 0;
-}
+}*/
