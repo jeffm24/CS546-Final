@@ -8,15 +8,15 @@
     <div class="panel-body">
         <div class="row">
             <div class="col-xs-12 col-sm-6">
-                <div class = "hidden" id = "title-<%= tickerSymbol %>"></div>
-				<div class="d3-wrapper sub-panel" id="d3-<%= tickerSymbol %>" data-symbol = "<%= tickerSymbol %>"></div>
-                <div id="buttons-<%= tickerSymbol %>">
-
-                    <button class="btn btn-primary week" type="button" data-symbol = "<%= tickerSymbol %>" >1W</button>
-                    <button class="btn btn-primary month" type="button" data-symbol = "<%= tickerSymbol %>">1M</button>
-                    <button class="btn btn-primary 3month" type="button" data-symbol = "<%= tickerSymbol %>">3M</button>
-                    <button class="btn btn-primary year" type="button" data-symbol = "<%= tickerSymbol %>">1Y</button>
-
+                <div class = "sub-panel graph-panel">
+                    <div class = "text-center price" id = "title-<%= tickerSymbol %>"></div>
+                    <div class="d3-wrapper" id="d3Search-<%= tickerSymbol %>" data-symbol = "<%= tickerSymbol %>"></div>
+                    <div class = "buttons" id="buttonsSearch-<%= tickerSymbol %>">
+                        <button class="btn btn-primary week" type="button" data-search = "YES" data-symbol = "<%= tickerSymbol %>" >1W</button>
+                        <button class="btn btn-primary month" type="button" data-search = "YES" data-symbol = "<%= tickerSymbol %>">1M</button>
+                        <button class="btn btn-primary 3month" type="button" data-search = "YES" data-symbol = "<%= tickerSymbol %>">3M</button>
+                        <button class="btn btn-primary year" type="button" data-search = "YES" data-symbol = "<%= tickerSymbol %>">1Y</button>
+                    </div>
                 </div>
             </div>
             <div class="col-xs-12 col-sm-6">
