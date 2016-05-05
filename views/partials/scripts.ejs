@@ -80,68 +80,68 @@
     });
 
     //Search submit
-          $('#searchForm').submit(function(e) {
-              $.ajax({
-                  url: '/search',
-                  type: 'POST',
-                  data: {
-                      search: $('#searchBarInput').val().toUpperCase()
-                  },
-                  success: function(data) {
-                      if (data.notFound) {
-                          swal({
-                              title: "Error!",
-                              text: data.result,
-                              type: "error",
-                              confirmButtonText: "OK"
-                          });
-                      } else {
+    $('#searchForm').submit(function(e) {
+        $.ajax({
+            url: '/search',
+            type: 'POST',
+            data: {
+                search: $('#searchBarInput').val().toUpperCase()
+            },
+            success: function(data) {
+                if (data.notFound) {
+                    swal({
+                        title: "Error!",
+                        text: data.result,
+                        type: "error",
+                        confirmButtonText: "OK"
+                    });
+                } else {
 
-                          // Create the render data object to be passed to the renderer
-                          var renderData = {
-                              tickerSymbol: data.result.symbol,
-                              changeInPercent: data.result.ChangeinPercent,
-                              open: data.result.Open,
-                              todayHigh: data.result.DaysHigh,
-                              todayLow: data.result.DaysLow,
-                              wkHigh: data.result.YearHigh,
-                              wkLow: data.result.YearLow,
-                              volume: data.result.Volume,
-                              avgVolume: data.result.AverageDailyVolume,
-                              marketCap: data.result.MarketCapitalization,
-                              peRatio: data.result.PERatio,
-                              divYield: data.result.DividendYield,
-                              change: data.result.change,
-                              userSavedTickers: data.result.userSavedTickers
-                          };
+                    // Create the render data object to be passed to the renderer
+                    var renderData = {
+                        tickerSymbol: data.result.symbol,
+                        changeInPercent: data.result.ChangeinPercent,
+                        open: data.result.Open,
+                        todayHigh: data.result.DaysHigh,
+                        todayLow: data.result.DaysLow,
+                        wkHigh: data.result.YearHigh,
+                        wkLow: data.result.YearLow,
+                        volume: data.result.Volume,
+                        avgVolume: data.result.AverageDailyVolume,
+                        marketCap: data.result.MarketCapitalization,
+                        peRatio: data.result.PERatio,
+                        divYield: data.result.DividendYield,
+                        change: data.result.change,
+                        userSavedTickers: data.result.userSavedTickers
+                    };
 
-                          // Get the contents of the searchTickerItem ejs file to pass to the renderer
-                          $.ajax({
-                              url: '/assets/templates/searchTickerItem.ejs',
-                              type: 'GET',
-                              success: function(searchTickerItemEJS) {
+                    // Get the contents of the searchTickerItem ejs file to pass to the renderer
+                    $.ajax({
+                        url: '/assets/templates/searchTickerItem.ejs',
+                        type: 'GET',
+                        success: function(searchTickerItemEJS) {
 
-                                  // Render the searchTickerItem and insert it
-                                  var html = ejs.render(searchTickerItemEJS, renderData);
-                                  $('#searchResult').html(html);
-                                  makeGraph(data.result.symbol,"Search");
+                            // Render the searchTickerItem and insert it
+                            var html = ejs.render(searchTickerItemEJS, renderData);
+                            $('#searchResult').html(html);
+                            makeGraph(data.result.symbol,"Search");
 
-                              }
-                          });
-                      }
-                  },
-                  error: function(xhr, status, error) {
-                      swal({
-                          title: "Error!",
-                          text: xhr.responseJSON.error,
-                          type: "error",
-                          confirmButtonText: "OK"
-                      });
-                  }
-              });
+                        }
+                    });
+                }
+            },
+            error: function(xhr, status, error) {
+                swal({
+                    title: "Error!",
+                    text: xhr.responseJSON.error,
+                    type: "error",
+                    confirmButtonText: "OK"
+                });
+            }
+        });
 
-              return false;
-          });
+        return false;
+    });
 
 
     // Save Ticker Button click handler
@@ -167,7 +167,7 @@
     });
 
     // Remove Ticker Button click handler
-    $(document).on('click', '#removeTickerBtn', function(event){
+    $(document).on('click', '.remove-ticker-btn', function(event){
         $.ajax({
             url: '/removeTicker',
             type: 'DELETE',
@@ -176,6 +176,62 @@
             },
             success: function(data) {
                 location.reload();
+            },
+            error: function(xhr, status, error) {
+                swal({
+                    title: "Error!",
+                    text: xhr.responseJSON.error,
+                    type: "error",
+                    confirmButtonText: "OK"
+                });
+            }
+        });
+    });
+
+    // Refresh Ticker Button click handler
+    $(document).on('click', '.refresh-ticker-btn', function(event){
+        $.ajax({
+            url: '/updateTicker',
+            type: 'POST',
+            data: {
+                symbol: $(this).data('symbol')
+            },
+            success: function(data) {
+
+                // Create the render data object to be passed to the renderer
+                var renderData = {
+                    tickerSymbol: data.result.symbol,
+                    changeInPercent: data.result.ChangeinPercent,
+                    open: data.result.Open,
+                    todayHigh: data.result.DaysHigh,
+                    todayLow: data.result.DaysLow,
+                    wkHigh: data.result.YearHigh,
+                    wkLow: data.result.YearLow,
+                    volume: data.result.Volume,
+                    avgVolume: data.result.AverageDailyVolume,
+                    marketCap: data.result.MarketCapitalization,
+                    peRatio: data.result.PERatio,
+                    divYield: data.result.DividendYield,
+                    change: data.result.change,
+                    collapsed: false
+                };
+
+                // Get the contents of the openTickerItem ejs file to pass to the renderer
+                $.ajax({
+                    url: '/assets/templates/savedTickerItem.ejs',
+                    type: 'GET',
+                    success: function(openTickerItemEJS) {
+                        // Replace the current ticker item with the rendered openTickerItem
+                        var html = ejs.render(openTickerItemEJS, renderData);
+
+                        console.log("Replacing with:");
+                        console.log(html);
+
+                        $('#panel-' + renderData.tickerSymbol).replaceWith(html);
+                        makeGraph(data.result.symbol, "");
+
+                    }
+                });
             },
             error: function(xhr, status, error) {
                 swal({

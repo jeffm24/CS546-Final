@@ -4,7 +4,7 @@
             <h3 class="panel-title"><%= tickerSymbol %> <span class="change-percent <%= change %>">(<%= changeInPercent %>)</span></h3>
         </div>
     </a>
-    <div id="collapse<%= tickerSymbol %>" class="panel-collapse collapse out <%= change %>">
+    <div id="collapse<%= tickerSymbol %>" class="panel-collapse collapse <% if (collapsed) { %> out <% } else { %> in <% } %> <%= change %>">
         <div class="panel-body">
             <div class="row">
                 <div class="col-xs-12 col-sm-6">
