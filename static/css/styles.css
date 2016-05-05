@@ -27,12 +27,26 @@ body {
 .btn-primary:hover, .btn-primary.active:hover {
     background-color: #01875e !important;
 }
-.btn-primary:focus {
-    background-color: #1ce2a5;
-}
 .btn-primary:active, .btn-primary.active {
     /*background-color: #1ce2a5;*/
     background-color: #01875e !important;
+    -webkit-box-shadow: inset 0px 0px 10px 0px rgba(0,0,0,0.75);
+    -moz-box-shadow: inset 0px 0px 10px 0px rgba(0,0,0,0.75);
+    box-shadow: inset 0px 0px 10px 0px rgba(0,0,0,0.75);
+}
+
+/* Negative styling for primary buttons */
+.btn-primary.negative, .btn-primary.negative:focus, .btn-primary.negative:active:focus {
+    background-color: #ED4337 !important;
+    border: none;
+    box-shadow: 0px 1px 1px rgba(0,0,0,0.5);
+    text-shadow: 0px 1px 1px rgba(0,0,0,0.5);
+}
+.btn-primary.negative:hover, .btn-primary.negative.active:hover {
+    background-color: #d22014 !important;
+}
+.btn-primary.negative:active, .btn-primary.negative.active {
+    background-color: #d22014 !important;
     -webkit-box-shadow: inset 0px 0px 10px 0px rgba(0,0,0,0.75);
     -moz-box-shadow: inset 0px 0px 10px 0px rgba(0,0,0,0.75);
     box-shadow: inset 0px 0px 10px 0px rgba(0,0,0,0.75);
@@ -182,7 +196,7 @@ body {
      margin-bottom: -10px;
  }
 
- #removeTickerBtn {
+ .remove-ticker-btn {
      margin-top: 10px;
  }
 
@@ -304,6 +318,11 @@ svg {
     left: 0;
 }*/
 
+/*
+ *  -----------------------------------------------------------------
+ *  Edit Profile Page styling
+ *  -----------------------------------------------------------------
+ */
 
 #edit-profile-panel {
     background-color: #212124;
