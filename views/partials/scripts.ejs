@@ -308,12 +308,14 @@ $('.year').on('click', function(e) {
         });
     };
 
-    /*
-    $('.panel').on('show.bs.collapse', function (e) {
-        console.log('#' + e.target.id + ' .week');
-        //$('#' + e.target.id + ' .week').click();
+    // Clicks the week view button on first expand of each collapse-panel
+    $('.panel').on('shown.bs.collapse', function (e) {
+
+        if (!$(this).data('shown')) {
+            $('#' + e.target.id + ' .week').click();
+            $(this).data("shown", 'true');
+        }
     });
-    */
 
     $(document).ready(function () {
         $(".d3-wrapper").each(function() {
