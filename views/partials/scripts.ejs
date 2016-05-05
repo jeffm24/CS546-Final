@@ -63,8 +63,13 @@
                         // Replace the current ticker item with the rendered openTickerItem
                         var html = ejs.render(openTickerItemEJS, renderData);
 
+                        // Graph panel doesn't change at all so grab the html from there to be re-inserted (so we don't have to remake it)
+                        $graphPanelHtml = $('#d3-' + renderData.tickerSymbol).parent().html();
+
                         $('#panel-' + renderData.tickerSymbol).replaceWith(html);
-                        makeGraph(data.result.symbol, "");
+                        $('#d3-' + renderData.tickerSymbol).parent().html($graphPanelHtml);
+
+                        //makeGraph(data.result.symbol, "");
 
                     }
                 });
