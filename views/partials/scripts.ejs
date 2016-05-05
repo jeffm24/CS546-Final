@@ -124,6 +124,8 @@
                                   // Render the searchTickerItem and insert it
                                   var html = ejs.render(searchTickerItemEJS, renderData);
                                   $('#searchResult').html(html);
+                                  makeGraph(data.result.symbol,"Search");
+                                  $('#buttons' + "Search" + '-' + data.result.symbol + ' .week').click();
                               }
                           });
                       }
@@ -186,57 +188,77 @@
         });
     });
 
-$('.week').on('click', function(e) {
+$(document).on('click','.week', function(e) {
   console.log($(e.target).data("symbol"));
   var stock = $(e.target).data("symbol");
+  var search = $(e.target).data("search");
   var end = new Date();
   var start = new Date();
   start.setDate(end.getDate()-7);
   start = start.toISOString().split('T')[0];
   end = end.toISOString().split('T')[0];
-  updateGraph(stock,start,end);
-
+  if(search){
+    updateGraph(stock,start,end,"Search");
+  } else {
+    updateGraph(stock,start,end,"");
+  }
 });
 
-$('.month').on('click', function(e) {
+$(document).on('click','.month', function(e) {
   console.log($(e.target).data("symbol"));
   var stock = $(e.target).data("symbol");
+  var search = $(e.target).data("search");
   var end = new Date();
   var start = new Date();
   start.setMonth(end.getMonth()-1);
   start = start.toISOString().split('T')[0];
   end = end.toISOString().split('T')[0];
-  updateGraph(stock,start,end);
-
+  if(search){
+    updateGraph(stock,start,end,"Search");
+  } else {
+    updateGraph(stock,start,end,"");
+  }
 });
 
-$('.3month').on('click', function(e) {
+$(document).on('click','.3month', function(e) {
   console.log($(e.target).data("symbol"));
   var stock = $(e.target).data("symbol");
+  var search = $(e.target).data("search");
   var end = new Date();
   var start = new Date();
   start.setMonth(end.getMonth()-3);
   start = start.toISOString().split('T')[0];
   end = end.toISOString().split('T')[0];
-  updateGraph(stock,start,end);
+  if(search){
+    updateGraph(stock,start,end,"Search");
+  } else {
+    updateGraph(stock,start,end,"");
+  }
 
 });
 
-$('.year').on('click', function(e) {
+$(document).on('click','.year', function(e) {
   console.log($(e.target).data("symbol"));
   var stock = $(e.target).data("symbol");
+  var search = $(e.target).data("search");
   var end = new Date();
   var start = new Date();
   start.setFullYear(end.getFullYear()-1);
   start = start.toISOString().split('T')[0];
   end = end.toISOString().split('T')[0];
-  updateGraph(stock,start,end);
+  if(search){
+    updateGraph(stock,start,end,"Search");
+  } else {
+    updateGraph(stock,start,end,"");
+  }
 });
 
-    function makeGraph(s) {
+
+
+    function makeGraph(s, tag) {
 
         var margin = {top: 1, right: -30, bottom: 20, left: 0};
-        var svg = d3.select("#d3-" + s)
+        var svg = d3.select("#d3" + tag + "-" + s)
             .append("svg")
             .attr("preserveAspectRatio", "xMinYMin meet")
             .attr("viewBox", "0 0 500 400")
@@ -249,10 +271,9 @@ $('.year').on('click', function(e) {
         svg.append("path")        // Add the valueline path.
             .attr("class", "line");
 
-        $('#buttons-' + s + ' .week').click();
     }
 
-    function updateGraph(t,s,e) {
+    function updateGraph(t,s,e,tag) {
 
         var stock = t;
         var start = s;
@@ -264,7 +285,7 @@ $('.year').on('click', function(e) {
         var x = d3.time.scale().range([0, width]);
         var y = d3.scale.linear().range([height, 0]);
 
-        console.log("#d3" + stock);
+        //console.log("#d3" + stock);
         var parseDate = d3.time.format("%Y-%m-%d").parse;
         var valueline = d3.svg.line()
             .x(function(d) { return x(d.date); })
@@ -296,7 +317,7 @@ $('.year').on('click', function(e) {
                     return d.high; })
             ]);
 
-            var svg = d3.select('#d3-' + stock).transition();
+            var svg = d3.select("#d3" + tag + "-" + stock).transition();
 
             // Make the changes
             svg.select(".line")    // change the line
@@ -321,7 +342,7 @@ $('.year').on('click', function(e) {
         $(".d3-wrapper").each(function() {
             var symbol = $(this).data("symbol");
 
-            makeGraph(symbol);
+            makeGraph(symbol,"");
         });
     });
 
