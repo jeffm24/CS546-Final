@@ -142,7 +142,11 @@ MongoClient.connect(fullMongoUrl)
 
             // Clear the sessionID for the logged out user
             return usersCollection.update({"_id": userId}, {$addToSet: {"savedTickers": symbol}}).then(function() {
-                return Promise.resolve(true);
+                // Return the new savedTickers list on success
+                return usersCollection.findOne({"_id": userId}).then(function(user) {
+                    return Promise.resolve(user.savedTickers);
+                });
+
             }, function(errorMessage) {
                 return Promise.reject(errorMessage);
             });
@@ -158,7 +162,11 @@ MongoClient.connect(fullMongoUrl)
 
             // Clear the sessionID for the logged out user
             return usersCollection.update({"_id": userId}, {$pull: {"savedTickers": symbol}}).then(function() {
-                return Promise.resolve(true);
+                // Return the new savedTickers list on success
+                return usersCollection.findOne({"_id": userId}).then(function(user) {
+                    return Promise.resolve(user.savedTickers);
+                });
+
             }, function(errorMessage) {
                 return Promise.reject(errorMessage);
             });

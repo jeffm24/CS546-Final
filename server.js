@@ -6,6 +6,9 @@ var httpRequest = require('request');
 var userData = require('./userData.js');
 var tickerData = require('./tickerData.js');
 var historicalData = require('./historicalData.js');
+var ejs = require('ejs');
+var fs = require('fs');
+
 // We create our express isntance:
 var app = express();
 
@@ -385,8 +388,39 @@ app.post("/updateTicker", function(request, response) {
 app.post("/saveTicker", function(request, response) {
 
     if (response.locals.user) {
-        userData.saveTicker(response.locals.user._id, request.body.symbol).then(function(result) {
-            response.json({result: "Successfully added ticker."});
+        userData.saveTicker(response.locals.user._id, request.body.symbol).then(function(newSavedTickers) {
+            // Get the info from all of the users current saved tickers to be rendered and passed to the client
+            tickerData.getMultTickerInfo(newSavedTickers).then(function(tickerData) {
+                var template = fs.readFileSync('./static/templates/savedTickerItem.ejs', "utf8");
+                var html = "";
+
+                // Create the html to be sent to the client by rendering a savedTickerItem template for every ticker info object returned
+                for (ticker of tickerData) {
+
+                    // Create the render data object to be passed to the renderer
+                    var renderData = {
+                        tickerSymbol: ticker.symbol,
+                        changeInPercent: ticker.ChangeinPercent,
+                        open: ticker.Open,
+                        todayHigh: ticker.DaysHigh,
+                        todayLow: ticker.DaysLow,
+                        wkHigh: ticker.YearHigh,
+                        wkLow: ticker.YearLow,
+                        volume: ticker.Volume,
+                        avgVolume: ticker.AverageDailyVolume,
+                        marketCap: ticker.MarketCapitalization,
+                        peRatio: ticker.PERatio,
+                        divYield: ticker.DividendYield,
+                        change: ticker.change,
+                        collapsed: true
+                    };
+
+                    html += ejs.render(template, renderData);
+                }
+
+                response.json({result: html});
+            });
+            //response.json({result: "Successfully added ticker."});
         }, function(errorMessage) {
             response.status(500).json({error: errorMessage});
         });
@@ -400,7 +434,7 @@ app.post("/saveTicker", function(request, response) {
 app.delete("/removeTicker", function(request, response) {
 
     if (response.locals.user) {
-        userData.deleteTicker(response.locals.user._id, request.body.symbol).then(function(result) {
+        userData.deleteTicker(response.locals.user._id, request.body.symbol).then(function(newSavedTickers) {
             response.json({result: "Successfully removed ticker."});
         }, function(errorMessage) {
             response.status(500).json({error: errorMessage});

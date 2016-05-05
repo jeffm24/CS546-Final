@@ -290,7 +290,12 @@
                 symbol: $('#saveTickerBtn').data('symbol')
             },
             success: function(data) {
-                location.reload();
+                $('#panel-search').remove();
+                $('#accordion').html(data.result);
+                $('.savedTickerItem').each(function() {
+                    makeGraph($(this).data('symbol'), "");
+                });
+                //location.reload();
             },
             error: function(xhr, status, error) {
                 swal({
@@ -312,7 +317,7 @@
                 symbol: $(event.target).data('symbol')
             },
             success: function(data) {
-                location.reload();
+                $('#panel-' + $(event.target).data('symbol')).remove();
                 removeFromCache($(event.target).data('symbol'));
             },
             error: function(xhr, status, error) {
@@ -475,7 +480,7 @@
     }
 
     // Clicks the last active button on expand of each panel (to redraw the graph)
-    $('.panel').on('shown.bs.collapse', function (e) {
+    $(document).on('shown.bs.collapse', '.panel', function (e) {
         $('#' + e.target.id + ' .active').click();
     });
 
