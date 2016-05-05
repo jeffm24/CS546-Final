@@ -56,5 +56,5 @@ MongoClient.connect(fullMongoUrl)
 
         };
 
-      };
+
     });
