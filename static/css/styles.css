@@ -8,6 +8,10 @@ body {
     background-color: #39393c; /*#303032;*/
     color: rgb(230,230,230);
     text-shadow: 0px 1px 1px rgba(0,0,0,0.5);
+    font-family: 'Droid Sans';
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 small {
@@ -214,6 +218,10 @@ small {
      padding: 5px 10px;
      margin-top: -4px;
      margin-bottom: -10px;
+ }
+
+ .refresh-ticker-btn {
+     margin-top: -6px;
  }
 
  .remove-ticker-btn {
