@@ -46,7 +46,7 @@ function updateTicker(tickerSymbol, showSuccessAlert) {
                     $varianceHtml = $('#variance-' + renderData.tickerSymbol).text();
 
                     $('#panel-' + renderData.tickerSymbol).replaceWith(html);
-                    
+
                     $('#d3-' + renderData.tickerSymbol).parent().html($graphPanelHtml);
                     $('#return-' + renderData.tickerSymbol).text($returnValueHtml);
                     $('#variance-' + renderData.tickerSymbol).text($varianceHtml);
@@ -178,3 +178,10 @@ $(document).on('click','.btn-graph', function(e) {
 $(document).on('shown.bs.collapse', '.panel', function (e) {
     $('#' + e.target.id + ' .active').click();
 });
+
+// Run the update ticker function for each saved ticker every hour
+setInterval(function() {
+    $('.savedTickerItem').each(function() {
+        updateTicker($(this).data('symbol'), false);
+    });
+}, 3600000);
