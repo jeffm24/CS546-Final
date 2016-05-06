@@ -100,7 +100,7 @@ function drawGraph(t,s,e,tag,DATA){
     // Make the changes
     svg.select(".line")    // change the line
         .transition()
-        .duration(1000)
+        .duration(500)
         .attr("d", valueline(DATA.result));
 
     $('#title-' + stock).text(parseFloat(DATA.result[0].Open).toLocaleString('en-US', { style: 'currency', currency: 'USD' }));
