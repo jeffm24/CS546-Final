@@ -64,7 +64,7 @@ function drawGraph(t,s,e,tag,DATA){
     var stock = t;
     var start = s;
     var end = e;
-
+    var values = [];
     var margin = {top: 0, right: 0, bottom: 0, left: 0},
         width = $("#d3" + tag + "-" + stock).outerWidth() - margin.left - margin.right,
         height = $("#d3" + tag + "-" + stock).outerHeight() - margin.top - margin.bottom;
@@ -84,6 +84,7 @@ function drawGraph(t,s,e,tag,DATA){
         d.date = parseDate(d.Date);
         d.high = +d.High;
         d.low = +d.Low;
+        values.push(d.Open);
     });
 
     x.domain(d3.extent(DATA.result, function(d) {
@@ -103,9 +104,14 @@ function drawGraph(t,s,e,tag,DATA){
         .duration(500)
         .attr("d", valueline(DATA.result));
 
-    $('#title-' + stock).text(parseFloat(DATA.result[0].Open).toLocaleString('en-US', { style: 'currency', currency: 'USD' }));
+    var ret = (ubique.mean(ubique.tick2ret(values.reverse())) * 100).toFixed(4);
+    var varc = (ubique.varc(ubique.tick2ret(values.reverse())) * 100).toFixed(4);
+    $('#title' + tag + '-' + stock).text(parseFloat(DATA.result[0].Open).toLocaleString('en-US', { style: 'currency', currency: 'USD' }));
+    $('#return' + tag + '-' + stock).text(ret + "%");
+    $('#variance' + tag + '-' + stock).text(varc + "%");
 
 }
+
 
 $(document).ready(function () {
     $(".d3-wrapper").each(function() {
