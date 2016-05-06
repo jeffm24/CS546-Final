@@ -16,44 +16,46 @@
 <!-- Client-side EJS -->
 <script src="/assets/js/ejs.min.js"></script>
 
-<!-- d3 scripts -->
-<script src="//d3js.org/d3.v3.min.js"></script>
+<% if (pageTitle == 'Portfolio') { %>
+    <!-- d3 scripts -->
+    <script src="//d3js.org/d3.v3.min.js"></script>
 
-<!-- Scripts handling drawing of graphs -->
-<script src="/assets/js/graphs.js"></script>
+    <!-- Scripts handling drawing of graphs -->
+    <script src="/assets/js/graphs.js"></script>
 
-<!-- Scripts handling local caching of graph data -->
-<script src="/assets/js/cache.js"></script>
+    <!-- Scripts handling local caching of graph data -->
+    <script src="/assets/js/cache.js"></script>
 
-<!-- Scripts handling search bar events -->
-<script src="/assets/js/searchHandlers.js"></script>
+    <!-- Scripts handling search bar events -->
+    <script src="/assets/js/searchHandlers.js"></script>
 
-<!-- Scripts handling events within tickerItems -->
-<script src="/assets/js/tickerItemHandlers.js"></script>
+    <!-- Scripts handling events within tickerItems -->
+    <script src="/assets/js/tickerItemHandlers.js"></script>
 
-<!-- Extra scripts -->
-<script>
-    // Handler for logging the user out when the sign out button is clicked
-    $('#signOutBtn').on('click', function(e) {
+    <!-- Extra scripts -->
+    <script>
+        // Handler for logging the user out when the sign out button is clicked
+        $('#signOutBtn').on('click', function(e) {
 
-        $.ajax({
-            url: '/signout',
-            type: 'POST',
-            success: function(data) {
-                location.reload();
-            },
-            error: function(xhr, status, error) {
-                alert(xhr.responseText + ' (' + xhr.status + ')');
-            }
+            $.ajax({
+                url: '/signout',
+                type: 'POST',
+                success: function(data) {
+                    location.reload();
+                },
+                error: function(xhr, status, error) {
+                    alert(xhr.responseText + ' (' + xhr.status + ')');
+                }
+            });
+
         });
 
-    });
+        // Run the update ticker function for each saved ticker every hour
+        setInterval(function() {
+            $('.savedTickerItem').each(function() {
+                updateTicker($(this).data('symbol'), false);
+            });
+        }, 3600000);
 
-    // Run the update ticker function for each saved ticker every hour
-    setInterval(function() {
-        $('.savedTickerItem').each(function() {
-            updateTicker($(this).data('symbol'), false);
-        });
-    }, 3600000);
-
-</script>
+    </script>
+<% } %>

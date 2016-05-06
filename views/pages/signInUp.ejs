@@ -3,6 +3,7 @@
 
 <head>
     <% include ../partials/head %>
+    <script src="https://www.google.com/recaptcha/api.js"></script>
 </head>
 
 <body>
@@ -51,6 +52,9 @@
 									<div class="form-group">
 										<input type="password" name="confirm-password" id="confirm-password" tabindex="2" class="form-control" placeholder="Confirm Password">
 									</div>
+                                    <div class="form-group">
+                                        <div class="g-recaptcha" data-sitekey="6LfHNh8TAAAAAJeYQyoVxYu9o1iL3o1Lvm3e4SUh" style="transform:scale(0.77);-webkit-transform:scale(0.77);transform-origin:0 0;-webkit-transform-origin:0 0;"></div>
+                                    </div>
 									<div class="form-group">
 										<div class="row">
 											<div class="col-sm-6 col-sm-offset-3">
@@ -96,15 +100,19 @@
         });
 
         $('#register-form').on('submit', function() {
+
             $.ajax({
                 url: '/register',
                 type: 'POST',
                 data: {
                     'username': $('#register-form input[name="username"]').val(),
                     'password': $('#register-form input[name="password"]').val(),
-                    'confirm': $('#register-form input[name="confirm-password"]').val()
+                    'confirm': $('#register-form input[name="confirm-password"]').val(),
+                    'recaptchaResponse': grecaptcha.getResponse()
                 },
                 success: function(data) {
+                    grecaptcha.reset();
+
                     swal({
                         title: "Success!",
                         text: data.status,

@@ -8,6 +8,7 @@ var tickerData = require('./tickerData.js');
 var historicalData = require('./historicalData.js');
 var ejs = require('ejs');
 var fs = require('fs');
+var SECRET = "6LfHNh8TAAAAANSdnXIWVwkPXMrj50ClhnkqBSD_";    //recaptcha secret key
 
 // We create our express isntance:
 var app = express();
@@ -35,6 +36,25 @@ app.use(function(request, response, next) {
     });
 });
 
+// Middleware to authenticate recaptcha response if one has been set
+app.use(function(request, response, next) {
+
+    if (request.body.recaptchaResponse) {
+        httpRequest("https://www.google.com/recaptcha/api/siteverify?secret=" + SECRET + "&response=" + request.body.recaptchaResponse + "&remoteip=" + request.client.remoteAddress, function(error, data, body) {
+            if (error) {
+                response.locals.recaptcha = false;
+            } else {
+                response.locals.recaptcha = true;
+            }
+
+            next();
+        });
+    } else {
+        next();
+    }
+
+});
+
 // Redirects to "/profile" or renders the sign in/sign up page depending on whether the user is logged in or not
 app.get("/", function(request, response) {
 
@@ -56,7 +76,7 @@ app.get("/profile", function(request, response) {
 
         tickerData.getMultTickerInfo(user.savedTickers).then(function(tickers) {
             response.render('pages/profile', {
-                pageTitle: 'Profile',
+                pageTitle: 'Portfolio',
                 username: user.username,
                 tickers: tickers
             });
@@ -166,14 +186,18 @@ app.post("/register", function(request, response) {
     // Only run addUser function if the user is not currently logged in
     if (!response.locals.user) {
 
-        userData.addUser(request.body.username, request.body.password, request.body.confirm).then(function(val) {
-            response.json({status: request.body.username + " successfully added. Please try logging in."});
-        }, function(errorMessage) {
-            response.status(500).json({ error: errorMessage });
-        });
+        if (response.locals.recaptcha) {
+            userData.addUser(request.body.username, request.body.password, request.body.confirm).then(function(val) {
+                response.json({status: request.body.username + " successfully added. Please try logging in."});
+            }, function(errorMessage) {
+                response.status(500).json({ error: errorMessage });
+            });
+        } else {
+            response.status(500).json({error: "Please validate with the recaptcha before submitting."});
+        }
 
     } else {
-        response.status(500).json({error: "User already signed in."})
+        response.status(500).json({error: "User already signed in."});
     }
 
 });
