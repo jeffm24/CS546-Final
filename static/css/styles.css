@@ -108,6 +108,13 @@ small {
     margin: 5px 10px;
 }
 
+.nav-icon {
+    padding: 0px;
+    margin-top: -9px;
+    margin-right: 10px;
+    width: 25px;
+}
+
 /*
  * -----------------------------------------------------------------
  * Login/Register Page Styling
@@ -348,4 +355,10 @@ svg {
 #edit-profile-panel > * {
     background-color: #212124;
     color: white;
+}
+
+@media screen and (max-width:767px) {
+    .affix#searchBar {
+        left: 60%;
+    }
 }
