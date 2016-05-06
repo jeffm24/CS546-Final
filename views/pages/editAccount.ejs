@@ -25,13 +25,10 @@
                         <label>Last Name: <input class="form-control" name="lastName" placeholder="Last Name" type="text" value="<%= lastName %>"></label>
                     </div>
                     <div class="form-group">
-                        <label>Hobby: <input class="form-control" name="hobby" placeholder="Hobby" type="text" value="<%= hobby %>"></label>
+                        <label>Occupation: <input class="form-control" name="occupation" placeholder="Occupation" type="text" value="<%= occupation %>"></label>
                     </div>
                     <div class="form-group">
-                        <label>Pet Name: <input class="form-control" name="petName" placeholder="Pet Name" type="text" value="<%= petName %>"></label>
-                    </div>
-                    <div class="form-group">
-                        <input class="btn btn-primary" type="submit" value="Submit">
+                        <input class="btn btn-primary" type="submit" value="Save">
                     </div>
                 </form>
             </div>
@@ -49,14 +46,23 @@
                 data: {
                     'firstName': $('#editInfoForm input[name="firstName"]').val(),
                     'lastName': $('#editInfoForm input[name="lastName"]').val(),
-                    'hobby': $('#editInfoForm input[name="hobby"]').val(),
-                    'petName': $('#editInfoForm input[name="petName"]').val()
+                    'occupation': $('#editInfoForm input[name="occupation"]').val()
                 },
                 success: function(data) {
-                    location.reload();
+                    swal({
+                        title: "Success!",
+                        text: data.result,
+                        type: "success",
+                        confirmButtonText: "OK"
+                    });
                 },
                 error: function(xhr, status, error) {
-                    alert(xhr.responseText + ' (' + xhr.status + ')');
+                    swal({
+                        title: "Error!",
+                        text: xhr.responseJSON.error,
+                        type: "error",
+                        confirmButtonText: "OK"
+                    });
                 }
             });
 

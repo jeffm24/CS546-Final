@@ -88,7 +88,7 @@ app.get("/profile", function(request, response) {
 
 });
 
-//
+// Route for the Edit Account Info page
 app.get("/account", function(request, response){
   // If the user is logged in, render the profile page, otherwise redirect to '/'
   if (response.locals.user) {
@@ -99,8 +99,7 @@ app.get("/account", function(request, response){
           username: user.username,
           firstName: user.profile.firstName,
           lastName: user.profile.lastName,
-          hobby: user.profile.hobby,
-          petName: user.profile.petName
+          occupation: user.profile.occupation
       });
   } else {
       response.redirect('/');
@@ -114,8 +113,8 @@ app.put("/profile/editUserInfo", function(request, response) {
     // Only run editUserInfo function if the user is currently logged in
     if (response.locals.user) {
 
-        userData.editUserInfo(response.locals.user._id, request.body).then(function(val) {
-            response.json({status: 'success'});
+        userData.editUserInfo(response.locals.user._id, request.body).then(function(newProfile) {
+            response.json({result: "Your account info has been successfully updated."});
         }, function(errorMessage) {
             response.status(500).json({ error: errorMessage });
         });

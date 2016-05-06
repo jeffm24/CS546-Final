@@ -40,12 +40,7 @@ MongoClient.connect(fullMongoUrl)
                             username: username,
                             encryptedPassword: hash,
                             currentSessionId: "",
-                            profile: {
-                                firstName: "",
-                                lastName: "",
-                                hobby: "",
-                                petName: ""
-                            },
+                            profile: {},
                             savedTickers: []
                         });
                     });
@@ -148,12 +143,7 @@ MongoClient.connect(fullMongoUrl)
             }
 
             // Update profile
-            return usersCollection.update({"_id": userId}, {$set: {
-                'profile.firstName': info.firstName,
-                'profile.lastName': info.lastName,
-                'profile.hobby': info.hobby,
-                'profile.petName': info.petName
-            }}).then(function() {
+            return usersCollection.update({"_id": userId}, {$set: {"profile": info}}).then(function() {
                 return Promise.resolve(true);
             });
         };
