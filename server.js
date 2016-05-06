@@ -222,7 +222,7 @@ app.put("/searchHistory", function(request, response) {
     historicalData.checkDates(request.body.ticker,request.body.start,request.body.end).then(function(result) {
 
         if(result === null){
-            console.log("TICKER NOT FOUND");
+            //console.log("TICKER NOT FOUND");
             var end = new Date();
             var start = new Date();
             start.setFullYear(end.getFullYear()-1);
@@ -262,7 +262,7 @@ app.put("/searchHistory", function(request, response) {
       }
 
       else if(result == request.body.end){
-          console.log("TICKER UP TO DATE");
+          //console.log("TICKER UP TO DATE");
           historicalData.getData(request.body.ticker,request.body.start,request.body.end).then(function(data) {
               response.json({result: data});
             });
@@ -273,7 +273,7 @@ app.put("/searchHistory", function(request, response) {
           start.setDate(start.getDate() + 1);
           start = start.toISOString().split('T')[0];
           end = end.toISOString().split('T')[0];
-          console.log("TICKER NEEDS UPDATING FROM " + start + " to " + request.body.end);
+          //console.log("TICKER NEEDS UPDATING FROM " + start + " to " + request.body.end);
           var inputURL = "http://query.yahooapis.com/v1/public/yql"+
                         "?q=select%20*%20from%20yahoo.finance.historicaldata%20"+
                         "where%20symbol%20%3D%20%22"
