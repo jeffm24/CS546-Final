@@ -40,11 +40,16 @@ function updateTicker(tickerSymbol, showSuccessAlert) {
                     // Replace the current ticker item with the rendered openTickerItem
                     var html = ejs.render(openTickerItemEJS, renderData);
 
-                    // Graph panel doesn't change at all so grab the html from there to be re-inserted (so we don't have to remake it)
+                    // Graph panel, Variance, and Expected return value don't change at all so grab the html from them to be re-inserted (so we don't have to remake it)
                     $graphPanelHtml = $('#d3-' + renderData.tickerSymbol).parent().html();
+                    $returnValueHtml = $('#return-' + renderData.tickerSymbol).text();
+                    $varianceHtml = $('#variance-' + renderData.tickerSymbol).text();
 
                     $('#panel-' + renderData.tickerSymbol).replaceWith(html);
+                    
                     $('#d3-' + renderData.tickerSymbol).parent().html($graphPanelHtml);
+                    $('#return-' + renderData.tickerSymbol).text($returnValueHtml);
+                    $('#variance-' + renderData.tickerSymbol).text($varianceHtml);
 
                     // Enable all refresh ticker buttons once ajax request has finished
                     $('.refresh-ticker-btn').each(function() {
