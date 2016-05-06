@@ -2,6 +2,7 @@
     <div class="panel-heading">
         <h3 class="panel-title"><%= tickerSymbol %> <span class="change-percent <%= change %>">(<%= changeInPercent %>)</span></h3>
         <% if (userSavedTickers.indexOf(tickerSymbol) === -1) { %>
+            <label class ="hidden" for="saveTickerBtn"> Add <%= tickerSymbol %> to Portfolio  </label>
             <button type="button" id="saveTickerBtn" class="btn btn-primary pull-right" data-symbol="<%= tickerSymbol %>"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button><div class="clearfix"></div>
         <% } %>
     </div>
@@ -13,10 +14,14 @@
                     <div class="d3-wrapper" id="d3Search-<%= tickerSymbol %>" data-symbol = "<%= tickerSymbol %>"></div>
 
                     <div class = "buttons searchButtons btn-group" id="buttonsSearch-<%= tickerSymbol %>">
-                        <button class="btn btn-primary btn-graph week <%= change %>" type="button" data-search = "YES" data-symbol = "<%= tickerSymbol %>" >1W</button>
-                        <button class="btn btn-primary btn-graph month <%= change %>" type="button" data-search = "YES" data-symbol = "<%= tickerSymbol %>">1M</button>
-                        <button class="btn btn-primary btn-graph 3month <%= change %>" type="button" data-search = "YES" data-symbol = "<%= tickerSymbol %>">3M</button>
-                        <button class="btn btn-primary btn-graph year <%= change %>" type="button" data-search = "YES" data-symbol = "<%= tickerSymbol %>">1Y</button>
+                        <label class ="hidden" for="1Ws-<%= tickerSymbol %>"> View 1 Week Graph for <%= tickerSymbol %> </label>
+                        <button id = "1Ws-<%= tickerSymbol %>" class="btn btn-primary btn-graph week <%= change %>" type="button" data-search = "YES" data-symbol = "<%= tickerSymbol %>" >1W</button>
+                        <label class ="hidden" for="1Ms-<%= tickerSymbol %>"> View 1 Month Graph for <%= tickerSymbol %>   </label>
+                        <button id = "1Ms-<%= tickerSymbol %>" class="btn btn-primary btn-graph month <%= change %>" type="button" data-search = "YES" data-symbol = "<%= tickerSymbol %>">1M</button>
+                        <label class ="hidden" for="3Ms-<%= tickerSymbol %>"> View 3 Month Graph for <%= tickerSymbol %>   </label>
+                        <button id = "3Ms-<%= tickerSymbol %>" class="btn btn-primary btn-graph 3month <%= change %>" type="button" data-search = "YES" data-symbol = "<%= tickerSymbol %>">3M</button>
+                        <label class ="hidden" for="1Ys-<%= tickerSymbol %>"> View 1 Year Graph for <%= tickerSymbol %>   </label>
+                        <button id = "1Ys-<%= tickerSymbol %>" class="btn btn-primary btn-graph year <%= change %>" type="button" data-search = "YES" data-symbol = "<%= tickerSymbol %>">1Y</button>
 
                     </div>
                 </div>

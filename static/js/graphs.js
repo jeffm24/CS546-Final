@@ -37,7 +37,7 @@ function updateGraph(t,s,e,tag,range) {
     //   // console.log(DATA.lastUpdate);
     // }
     if(!DATA){
-        console.log("UPDATE GRAPH - CACHE NEEDS UPDATING");
+        //console.log("UPDATE GRAPH - CACHE NEEDS UPDATING");
         var requestConfig = {
             method: "POST",
             url: "/searchHistory",
