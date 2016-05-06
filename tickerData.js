@@ -14,28 +14,10 @@ MongoClient.connect(fullMongoUrl)
         var converter = new Converter({});
 
         // Populate tickers collection
-        converter.fromFile("./static/csv/NASDAQ.csv", function (err, tickers) {
+        converter.fromFile("./static/csv/tickers.csv", function (err, tickers) {
             if (tickers) {
                 for (ticker of tickers) {
-                    tickerCollection.update({symbol: ticker.Symbol}, {$set: {symbol: ticker.Symbol, name: ticker.Name, market: 'NASDAQ'}}, {upsert: true});
-                }
-            } else {
-                console.log(err);
-            }
-        });
-        converter.fromFile("./static/csv/NYSE.csv", function (err, tickers) {
-            if (tickers) {
-                for (ticker of tickers) {
-                    tickerCollection.update({symbol: ticker.Symbol}, {$set: {symbol: ticker.Symbol, name: ticker.Name, market: 'NYSE'}}, {upsert: true});
-                }
-            } else {
-                console.log(err);
-            }
-        });
-        converter.fromFile("./static/csv/AMEX.csv", function (err, tickers) {
-            if (tickers) {
-                for (ticker of tickers) {
-                    tickerCollection.update({symbol: ticker.Symbol}, {$set: {symbol: ticker.Symbol, name: ticker.Name, market: 'AMEX'}}, {upsert: true});
+                    tickerCollection.update({symbol: ticker.Symbol}, {$set: {symbol: ticker.Symbol, name: ticker.Name, exchange: ticker.Exchange}}, {upsert: true});
                 }
             } else {
                 console.log(err);
