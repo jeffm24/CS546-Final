@@ -109,7 +109,7 @@ app.get("/account", function(request, response){
 
 
 // Updates user info using the given request body
-app.post("/profile/editUserInfo", function(request, response) {
+app.put("/profile/editUserInfo", function(request, response) {
 
     // Only run editUserInfo function if the user is currently logged in
     if (response.locals.user) {
@@ -203,9 +203,10 @@ app.post("/register", function(request, response) {
 });
 
 // Route for getting ticker suggestions based on a given search
-app.post("/getTickerSearchSuggestions", function(request, response) {
+app.get("/getTickerSearchSuggestions", function(request, response) {
 
-    tickerData.getTickerSearchSuggestions(request.body.search).then(function(result) {
+    var ticker = request.query.ticker;
+    tickerData.getTickerSearchSuggestions(ticker).then(function(result) {
         response.json({suggestions: result});
     }, function(errorMessage) {
         response.status(500).json({error: errorMessage});
@@ -213,10 +214,11 @@ app.post("/getTickerSearchSuggestions", function(request, response) {
 
 });
 
-app.post("/searchHistory", function(request, response) {
+app.put("/searchHistory", function(request, response) {
     // console.log(request.body.ticker);
     // console.log(request.body.start);
     // console.log(request.body.end);
+
     historicalData.checkDates(request.body.ticker,request.body.start,request.body.end).then(function(result) {
 
         if(result === null){
@@ -315,7 +317,7 @@ app.post("/searchHistory", function(request, response) {
 });
 
 // search route
-app.post("/search", function(request, response) {
+app.put("/search", function(request, response) {
 
     // Check if the ticker is up to date in the database before querying yahoo finance
     tickerData.isTickerUpToDate(request.body.search).then(function(upToDate) {
@@ -378,7 +380,7 @@ app.post("/search", function(request, response) {
 });
 
 // update ticker route (for forced update with database check)
-app.post("/updateTicker", function(request, response) {
+app.put("/updateTicker", function(request, response) {
 
     httpRequest('https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20yahoo.finance.quotes%20where%20symbol%20in%20(%22' + request.body.symbol + '%22)%0A%09%09&format=json&env=http%3A%2F%2Fdatatables.org%2Falltables.env&callback=', function (error, data, body) {
         if (!error && data.statusCode == 200) {

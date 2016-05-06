@@ -2,7 +2,7 @@
 function updateTicker(tickerSymbol, showSuccessAlert) {
     $.ajax({
         url: '/updateTicker',
-        type: 'POST',
+        type: 'PUT',
         data: {
             symbol: tickerSymbol
         },

@@ -6,11 +6,8 @@ $('#searchBarInput').on('input propertychange paste', function() {
 
     if ($('#searchBarInput').val()) {
         $.ajax({
-            url: '/getTickerSearchSuggestions',
-            type: 'POST',
-            data: {
-                search: $('#searchBarInput').val()
-            },
+            url: '/getTickerSearchSuggestions?ticker=' + $('#searchBarInput').val(),
+            type: 'GET',
             success: function(data) {
                 if (data) {
                     var listOfSymbols = [];
@@ -36,7 +33,7 @@ $('#searchBarInput').on('input propertychange paste', function() {
 $('#searchForm').submit(function(e) {
     $.ajax({
         url: '/search',
-        type: 'POST',
+        type: 'PUT',
         data: {
             search: $('#searchBarInput').val().toUpperCase()
         },

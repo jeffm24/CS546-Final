@@ -39,7 +39,7 @@ function updateGraph(t,s,e,tag,range) {
     if(!DATA){
         //console.log("UPDATE GRAPH - CACHE NEEDS UPDATING");
         var requestConfig = {
-            method: "POST",
+            method: "PUT",
             url: "/searchHistory",
             contentType: 'application/json',
             data: JSON.stringify({
