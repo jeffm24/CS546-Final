@@ -68,17 +68,43 @@ MongoClient.connect(fullMongoUrl)
                 // If user exists, check password
                 if (listOfUsers.length !== 0) {
                     var user = listOfUsers[0];
+                    var attempts = null;
+                    var lockOut = null;
+                    var fiveMin = 1000 * 60 * 5;
+                    var now = new Date().getTime();
+
+                    // If the lockOutStamp has been set and ten minutes have not passed yet, reject with "Please wait __ more minutes before trying again."
+                    if (user.lockOutStamp && (now - user.lockOutStamp.getTime() < fiveMin)) {
+                        var timeToWait = Math.ceil((fiveMin - (now - user.lockOutStamp.getTime())) / 1000 / 60);
+
+                        return Promise.reject("Please wait " + timeToWait + " more minute(s) before trying again.");
+                    }
+
+                    // Keep track of the number of times that user has tried to log in
+                    if (!user.logInAttempts || (user.lockOutStamp && (now - user.lockOutStamp.getTime() >= fiveMin))) {
+                        attempts = 1;
+                    } else {
+                        attempts = ++user.logInAttempts;
+
+                        // If there has been 5 attempts, set a lock out time stamp
+                        if (attempts === 5) {
+                            lockOut = new Date();
+                        }
+                    }
 
                     // Compare hash of given password to hash in the db
                     if (bcrypt.compareSync(password, user.encryptedPassword)) {
-                        // Create a new session ID for the user and update the user in the database
+                        // Login success: Create a new session ID for the user and update the user in the database
                         var sessionID = Guid.create().toString();
 
-                        return usersCollection.update({"username": username}, {$set: {"currentSessionId": sessionID}}).then(function() {
+                        return usersCollection.update({"username": username}, {$set: {"currentSessionId": sessionID, "logInAttempts": null, "lockOutStamp": null}}).then(function() {
                             return Promise.resolve(sessionID);
                         });
                     } else {
-                        return Promise.reject("Incorrect password.");
+                        // Login fail: update the number of failed attempts and lock out if necessary
+                        return usersCollection.update({"username": username}, {$set: {"currentSessionId": sessionID, "logInAttempts": attempts, "lockOutStamp": lockOut}}).then(function() {
+                            return Promise.reject("Incorrect password.");
+                        });
                     }
 
                 } else {
