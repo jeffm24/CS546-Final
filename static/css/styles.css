@@ -10,6 +10,10 @@ body {
     text-shadow: 0px 1px 1px rgba(0,0,0,0.5);
 }
 
+small {
+    color: #a2a2a2 !important;
+}
+
 .rc-anchor-alert {
     display: none !important;
 }
@@ -26,7 +30,8 @@ body {
     background-color: #17ac7e !important;
     border: none;
     box-shadow: 0px 1px 1px rgba(0,0,0,0.5);
-    text-shadow: 0px 1px 1px rgba(0,0,0,0.5);
+    text-shadow: 0px 1px 3px rgba(0,0,0,0.5);
+    color: white;
 }
 .btn-primary:hover, .btn-primary.active:hover {
     background-color: #01875e !important;
@@ -272,7 +277,7 @@ body {
 
 .stat-name {
     font-size: 1em;
-    color: grey;
+    color: #a2a2a2;
 }
 
 path {
