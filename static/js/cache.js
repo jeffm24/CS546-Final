@@ -14,24 +14,24 @@ function getFromCache(ticker){
 };
 
 function isCacheUpToDate(ticker,range) {
-    console.log("CHECKING IF " + ticker + " FOR " + range + " IS UP TO DATE ");
+    //console.log("CHECKING IF " + ticker + " FOR " + range + " IS UP TO DATE ");
 
     var data = getFromCache(ticker);
 
     if(data){
-        console.log(ticker + " IS IN CACHE");
+        // console.log(ticker + " IS IN CACHE");
         var now = new Date();
         var lastRange = data.range;
         var lastUpdate = data.lastUpdate;
         var hoursPassed = Math.abs(now - lastUpdate) / 36e5;
 
         if(lastRange !== range){
-            console.log("BUT NOT IN THE RIGHT RANGE");
+            // console.log("BUT NOT IN THE RIGHT RANGE");
             data = null;
         } else{
-            console.log("AND IS IN THE RIGHT RANGE");
-            if(hoursPassed > 5){
-                console.log("BUT HASNT BEEN UPDATED IN A WHILE");
+            // console.log("AND IS IN THE RIGHT RANGE");
+            if(hoursPassed > 24){
+                // console.log("BUT HASNT BEEN UPDATED IN A WHILE");
                 data = null;
             }
         }
@@ -43,7 +43,7 @@ function isCacheUpToDate(ticker,range) {
 };
 
 function updateCache(ticker,data,range){
-    console.log("UPDATED CACHE")
+    // console.log("UPDATED CACHE")
     var stock = getFromCache(ticker);
     var now = Date();
 
