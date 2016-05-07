@@ -1,6 +1,6 @@
 # CS546-Final
 
-Instructions to Run:
+Instructions to Run:  
     - Make sure that you have a mongo server running by running monogd.exe  
     - Run "npm install" from the root directory of the project to install dependencies  
     - Once all dependencies are installed, run "node server.js" from the root directory of the project to start the server  
