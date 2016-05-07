@@ -1,7 +1,5 @@
 var MongoClient = require('mongodb').MongoClient,
-    settings = require('./config.js'),
-    Converter = require("csvtojson").Converter,
-    httpRequest = require('request');
+    settings = require('./config.js');
 
 var fullMongoUrl = settings.mongoConfig.serverUrl + settings.mongoConfig.database;
 var exports = module.exports = {};
