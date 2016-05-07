@@ -30,12 +30,6 @@ function updateGraph(t,s,e,tag,range) {
 
     DATA = isCacheUpToDate(stock,range);
 
-    // if(DATA){
-    //   console.log("UPDATE GRAPH - FOUND IN CACHE");
-    //   console.log("UPDATE GARPH " + DATA.data);
-    //   // console.log(DATA.range);
-    //   // console.log(DATA.lastUpdate);
-    // }
     if(!DATA){
         //console.log("UPDATE GRAPH - CACHE NEEDS UPDATING");
         var requestConfig = {
@@ -111,7 +105,6 @@ function drawGraph(t,s,e,tag,DATA){
     $('#variance' + tag + '-' + stock).text(varc + "%");
 
 }
-
 
 $(document).ready(function () {
     $(".d3-wrapper").each(function() {

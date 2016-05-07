@@ -1,83 +1,3 @@
-// Calls the server-side route for updating the ticker with the given symbol
-function updateTicker(tickerSymbol, showSuccessAlert) {
-    $.ajax({
-        url: '/updateTicker',
-        type: 'PUT',
-        data: {
-            symbol: tickerSymbol
-        },
-        success: function(data) {
-
-            // Create the render data object to be passed to the renderer
-            var renderData = {
-                tickerSymbol: data.result.symbol,
-                changeInPercent: data.result.ChangeinPercent,
-                open: data.result.Open,
-                todayHigh: data.result.DaysHigh,
-                todayLow: data.result.DaysLow,
-                wkHigh: data.result.YearHigh,
-                wkLow: data.result.YearLow,
-                volume: data.result.Volume,
-                avgVolume: data.result.AverageDailyVolume,
-                marketCap: data.result.MarketCapitalization,
-                peRatio: data.result.PERatio,
-                divYield: data.result.DividendYield,
-                change: data.result.change
-            };
-
-            // check the current state of the panel associated with this ticker to set collapsed or not
-            if ($('#collapse' + renderData.tickerSymbol).hasClass('in')) {
-                renderData.collapsed = false;
-            } else {
-                renderData.collapsed = true;
-            }
-
-            // Get the contents of the openTickerItem ejs file to pass to the renderer
-            $.ajax({
-                url: '/assets/templates/savedTickerItem.ejs',
-                type: 'GET',
-                success: function(openTickerItemEJS) {
-                    // Replace the current ticker item with the rendered openTickerItem
-                    var html = ejs.render(openTickerItemEJS, renderData);
-
-                    // Graph panel, Variance, and Expected return value don't change at all so grab the html from them to be re-inserted (so we don't have to remake it)
-                    $graphPanelHtml = $('#d3-' + renderData.tickerSymbol).parent().html();
-                    $returnValueHtml = $('#return-' + renderData.tickerSymbol).text();
-                    $varianceHtml = $('#variance-' + renderData.tickerSymbol).text();
-
-                    $('#panel-' + renderData.tickerSymbol).replaceWith(html);
-
-                    $('#d3-' + renderData.tickerSymbol).parent().html($graphPanelHtml);
-                    $('#return-' + renderData.tickerSymbol).text($returnValueHtml);
-                    $('#variance-' + renderData.tickerSymbol).text($varianceHtml);
-
-                    // Enable all refresh ticker buttons once ajax request has finished
-                    $('.refresh-ticker-btn').each(function() {
-                        $(this).prop('disabled', false);
-                    });
-
-                    // Display success message to the user
-                    if (showSuccessAlert) {
-                        swal({
-                            title: "Success!",
-                            text: renderData.tickerSymbol + " is now up to date.",
-                            type: "success",
-                            confirmButtonText: "OK"
-                        });
-                    }
-                }
-            });
-        },
-        error: function(xhr, status, error) {
-            swal({
-                title: "Error!",
-                text: xhr.responseJSON.error,
-                type: "error",
-                confirmButtonText: "OK"
-            });
-        }
-    });
-}
 
 // Save Ticker Button click handler
 $(document).on('click', '#saveTickerBtn', function(event){
@@ -178,6 +98,87 @@ $(document).on('click','.btn-graph', function(e) {
 $(document).on('shown.bs.collapse', '.panel', function (e) {
     $('#' + e.target.id + ' .active').click();
 });
+
+// Calls the server-side route for updating the ticker with the given symbol
+function updateTicker(tickerSymbol, showSuccessAlert) {
+    $.ajax({
+        url: '/updateTicker',
+        type: 'PUT',
+        data: {
+            symbol: tickerSymbol
+        },
+        success: function(data) {
+
+            // Create the render data object to be passed to the renderer
+            var renderData = {
+                tickerSymbol: data.result.symbol,
+                changeInPercent: data.result.ChangeinPercent,
+                open: data.result.Open,
+                todayHigh: data.result.DaysHigh,
+                todayLow: data.result.DaysLow,
+                wkHigh: data.result.YearHigh,
+                wkLow: data.result.YearLow,
+                volume: data.result.Volume,
+                avgVolume: data.result.AverageDailyVolume,
+                marketCap: data.result.MarketCapitalization,
+                peRatio: data.result.PERatio,
+                divYield: data.result.DividendYield,
+                change: data.result.change
+            };
+
+            // check the current state of the panel associated with this ticker to set collapsed or not
+            if ($('#collapse' + renderData.tickerSymbol).hasClass('in')) {
+                renderData.collapsed = false;
+            } else {
+                renderData.collapsed = true;
+            }
+
+            // Get the contents of the openTickerItem ejs file to pass to the renderer
+            $.ajax({
+                url: '/assets/templates/savedTickerItem.ejs',
+                type: 'GET',
+                success: function(openTickerItemEJS) {
+                    // Replace the current ticker item with the rendered openTickerItem
+                    var html = ejs.render(openTickerItemEJS, renderData);
+
+                    // Graph panel, Variance, and Expected return value don't change at all so grab the html from them to be re-inserted (so we don't have to remake it)
+                    $graphPanelHtml = $('#d3-' + renderData.tickerSymbol).parent().html();
+                    $returnValueHtml = $('#return-' + renderData.tickerSymbol).text();
+                    $varianceHtml = $('#variance-' + renderData.tickerSymbol).text();
+
+                    $('#panel-' + renderData.tickerSymbol).replaceWith(html);
+
+                    $('#d3-' + renderData.tickerSymbol).parent().html($graphPanelHtml);
+                    $('#return-' + renderData.tickerSymbol).text($returnValueHtml);
+                    $('#variance-' + renderData.tickerSymbol).text($varianceHtml);
+
+                    // Enable all refresh ticker buttons once ajax request has finished
+                    $('.refresh-ticker-btn').each(function() {
+                        $(this).prop('disabled', false);
+                    });
+
+                    // Display success message to the user
+                    if (showSuccessAlert) {
+                        swal({
+                            title: "Success!",
+                            text: renderData.tickerSymbol + " is now up to date.",
+                            type: "success",
+                            confirmButtonText: "OK"
+                        });
+                    }
+                }
+            });
+        },
+        error: function(xhr, status, error) {
+            swal({
+                title: "Error!",
+                text: xhr.responseJSON.error,
+                type: "error",
+                confirmButtonText: "OK"
+            });
+        }
+    });
+}
 
 // Run the update ticker function for each saved ticker every hour
 setInterval(function() {

@@ -106,21 +106,15 @@ app.get("/account", function(request, response){
   }
 });
 
+// Route for getting ticker suggestions based on a given search
+app.get("/getTickerSearchSuggestions", function(request, response) {
 
-// Updates user info using the given request body
-app.put("/profile/editUserInfo", function(request, response) {
-
-    // Only run editUserInfo function if the user is currently logged in
-    if (response.locals.user) {
-
-        userData.editUserInfo(response.locals.user._id, request.body).then(function(newProfile) {
-            response.json({result: "Your account info has been successfully updated."});
-        }, function(errorMessage) {
-            response.status(500).json({ error: errorMessage });
-        });
-    } else {
-        response.status(500).json({error: "User not signed in."});
-    }
+    var ticker = request.query.ticker;
+    tickerData.getTickerSearchSuggestions(ticker).then(function(result) {
+        response.json({suggestions: result});
+    }, function(errorMessage) {
+        response.status(500).json({error: errorMessage});
+    });
 
 });
 
@@ -201,18 +195,102 @@ app.post("/register", function(request, response) {
 
 });
 
-// Route for getting ticker suggestions based on a given search
-app.get("/getTickerSearchSuggestions", function(request, response) {
+// Route for saving a ticker
+app.post("/saveTicker", function(request, response) {
 
-    var ticker = request.query.ticker;
-    tickerData.getTickerSearchSuggestions(ticker).then(function(result) {
-        response.json({suggestions: result});
+    if (response.locals.user) {
+        userData.saveTicker(response.locals.user._id, request.body.symbol).then(function(newSavedTickers) {
+            response.json({result: newSavedTickers});
+        }, function(errorMessage) {
+            response.status(500).json({error: errorMessage});
+        });
+    } else {
+        response.status(500).json({error: "User not signed in."});
+    }
+
+});
+
+// Updates user info using the given request body
+app.put("/profile/editUserInfo", function(request, response) {
+
+    // Only run editUserInfo function if the user is currently logged in
+    if (response.locals.user) {
+
+        userData.editUserInfo(response.locals.user._id, request.body).then(function(newProfile) {
+            response.json({result: "Your account info has been successfully updated."});
+        }, function(errorMessage) {
+            response.status(500).json({ error: errorMessage });
+        });
+    } else {
+        response.status(500).json({error: "User not signed in."});
+    }
+
+});
+
+// search route
+app.put("/search", function(request, response) {
+
+    // Check if the ticker is up to date in the database before querying yahoo finance
+    tickerData.isTickerUpToDate(request.body.search).then(function(upToDate) {
+
+        if (upToDate) {
+            // If the ticker is up to date, then just get the ticker info from the database and respond with it
+            tickerData.getTickerInfo(request.body.search).then(function(tickerInfo) {
+
+                tickerInfo.userSavedTickers = response.locals.user.savedTickers;
+
+                if (tickerInfo.ChangeinPercent.charAt(0) === '+') {
+                    tickerInfo.change = "positive";
+                } else {
+                    tickerInfo.change = "negative";
+                }
+
+                // Success respond with the ticker info
+                response.json({result: tickerInfo, upToDate: true});
+            });
+        } else {
+            //response.redirect('/updateTicker');
+            // If the ticker is not up to date, then query yahoo finance and update it before responding
+            httpRequest('https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20yahoo.finance.quotes%20where%20symbol%20in%20(%22' + request.body.search + '%22)%0A%09%09&format=json&env=http%3A%2F%2Fdatatables.org%2Falltables.env&callback=', function (error, data, body) {
+                if (!error && data.statusCode == 200) {
+
+                    var query = JSON.parse(body).query;
+                    var lastQueried = new Date(query.created);
+                    var info = query.results.quote;
+
+                    // Check to see if actual data was recieved
+                    if (info.Open) {
+
+                        // Update the ticker in the database with the results from the Yahoo query
+                        tickerData.refreshTicker(request.body.search, lastQueried, info).then(function(tickerInfo) {
+
+                            tickerInfo.userSavedTickers = response.locals.user.savedTickers;
+
+                            if (info.ChangeinPercent.charAt(0) === '+') {
+                                tickerInfo.change = "positive";
+                            } else {
+                                tickerInfo.change = "negative";
+                            }
+
+                            // Success respond the ticker info
+                            response.json({result: tickerInfo});
+                        });
+                    } else {
+                        response.json({result: "Query returned no results.", notFound: true});
+                    }
+                } else {
+                    response.status(500).json({error: error});
+                }
+            });
+        }
+
     }, function(errorMessage) {
-        response.status(500).json({error: errorMessage});
+        response.json({result: errorMessage, notFound: true});
     });
 
 });
 
+// search history
 app.put("/searchHistory", function(request, response) {
     // console.log(request.body.ticker);
     // console.log(request.body.start);
@@ -315,69 +393,6 @@ app.put("/searchHistory", function(request, response) {
     });
 });
 
-// search route
-app.put("/search", function(request, response) {
-
-    // Check if the ticker is up to date in the database before querying yahoo finance
-    tickerData.isTickerUpToDate(request.body.search).then(function(upToDate) {
-
-        if (upToDate) {
-            // If the ticker is up to date, then just get the ticker info from the database and respond with it
-            tickerData.getTickerInfo(request.body.search).then(function(tickerInfo) {
-
-                tickerInfo.userSavedTickers = response.locals.user.savedTickers;
-
-                if (tickerInfo.ChangeinPercent.charAt(0) === '+') {
-                    tickerInfo.change = "positive";
-                } else {
-                    tickerInfo.change = "negative";
-                }
-
-                // Success respond with the ticker info
-                response.json({result: tickerInfo, upToDate: true});
-            });
-        } else {
-            //response.redirect('/updateTicker');
-            // If the ticker is not up to date, then query yahoo finance and update it before responding
-            httpRequest('https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20yahoo.finance.quotes%20where%20symbol%20in%20(%22' + request.body.search + '%22)%0A%09%09&format=json&env=http%3A%2F%2Fdatatables.org%2Falltables.env&callback=', function (error, data, body) {
-                if (!error && data.statusCode == 200) {
-
-                    var query = JSON.parse(body).query;
-                    var lastQueried = new Date(query.created);
-                    var info = query.results.quote;
-
-                    // Check to see if actual data was recieved
-                    if (info.Open) {
-
-                        // Update the ticker in the database with the results from the Yahoo query
-                        tickerData.refreshTicker(request.body.search, lastQueried, info).then(function(tickerInfo) {
-
-                            tickerInfo.userSavedTickers = response.locals.user.savedTickers;
-
-                            if (info.ChangeinPercent.charAt(0) === '+') {
-                                tickerInfo.change = "positive";
-                            } else {
-                                tickerInfo.change = "negative";
-                            }
-
-                            // Success respond the ticker info
-                            response.json({result: tickerInfo});
-                        });
-                    } else {
-                        response.json({result: "Query returned no results.", notFound: true});
-                    }
-                } else {
-                    response.status(500).json({error: error});
-                }
-            });
-        }
-
-    }, function(errorMessage) {
-        response.json({result: errorMessage, notFound: true});
-    });
-
-});
-
 // update ticker route (for forced update with database check)
 app.put("/updateTicker", function(request, response) {
 
@@ -406,21 +421,6 @@ app.put("/updateTicker", function(request, response) {
             response.status(500).json({error: error});
         }
     });
-
-});
-
-// Route for saving a ticker
-app.post("/saveTicker", function(request, response) {
-
-    if (response.locals.user) {
-        userData.saveTicker(response.locals.user._id, request.body.symbol).then(function(newSavedTickers) {
-            response.json({result: newSavedTickers});
-        }, function(errorMessage) {
-            response.status(500).json({error: errorMessage});
-        });
-    } else {
-        response.status(500).json({error: "User not signed in."});
-    }
 
 });
 

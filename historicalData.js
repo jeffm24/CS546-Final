@@ -32,29 +32,14 @@ MongoClient.connect(fullMongoUrl)
             });
         };
         exports.addTicker = function(symbol, data){
-          //var parseDate = d3.time.format("%Y-%m-%d").parse;
-          // data.forEach(function(day) {
-          //   console.log(day.Date);
-          //   //tickerCollection.update({symbol: symbol}, {$set: {symbol: symbol, date: day.Date, price: day.Open}}, {upsert: true});
-          // });
-          // data.forEach(function(day) {
-          //   day.Date = new Date(day.Date).toISOString().split('T')[0];;
-          // });
           return tickerCollection.insertMany(data).then(function() {
               return tickerCollection.find().toArray();
           });
         };
-
         exports.getData = function(symbol, start, end){
-          // data.forEach(function(day) {
-          //   console.log(day.Date);
-          //   //tickerCollection.update({symbol: symbol}, {$set: {symbol: symbol, date: day.Date, price: day.Open}}, {upsert: true});
-          // });
           return tickerCollection.find({Symbol: symbol, Date: {$gte: start, $lte: end}}).toArray().then(function(data){
             return data;
           });
-
         };
-
 
     });
