@@ -1,19 +1,7 @@
 # CS546-Final
 
-Todo for CEO:
-  Sort button.
-  Dynamic search suggestion population
-  Section for search results (example if not dyanmic)
-  General Styling
-  Edit profile?
-  Sort dropdown for saved tickers (not implemented - just shown)
-    -Alphabeticle a-z
-    -Alphabetical z-a
-    -Price low to high
-    -Price high to low
-    -Date added [Default] (newest at top)
-  ***Power Point***
-
-Todo for final:
-  LolBackend
-  LolPNGFile
+Instructions to Run:
+    - Make sure that you have a mongo server running by running monogd.exe
+    - Run "npm install" from the root directory of the project to install dependencies
+    - Once all dependencies are installed, run "node server.js" from the root directory of the project to start the server
+    - Once you see the started message, navigate to localhost:3000 in your browser to view the site
