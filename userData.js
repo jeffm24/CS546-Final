@@ -1,6 +1,6 @@
 var MongoClient = require('mongodb').MongoClient,
     settings = require('./config.js'),
-    Guid = require('Guid'),
+    Guid = require('guid'),
     bcrypt = require('bcrypt-nodejs');
 
 var fullMongoUrl = settings.mongoConfig.serverUrl + settings.mongoConfig.database;
